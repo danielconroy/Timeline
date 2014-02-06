@@ -3,3 +3,9 @@ nbproject/
 build.xml
 manifest.mf
 TimeLineSave.txt
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
