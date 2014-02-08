@@ -8,7 +8,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.awt.Color;
 
 /**
  *
@@ -16,17 +18,21 @@ import java.util.Iterator;
  */
 public class FileIO {
     ArrayList<Timeline> timelines;
-    String fileName;
+    ArrayList<Category> categories;
+    String timeLineNames;
+    String catNames;
     /*
      * Constructor
      */
     public FileIO(){
         this.timelines = new ArrayList<Timeline>();
-        fileName = "TimeLineSave.txt";
+        this.categories = new ArrayList<Category>();
+        timeLineNames = "TimeLineSave.txt";
+        catNames = "CatSave.txt";
         BufferedReader reader;
         String raw;
         try{
-            reader = new BufferedReader(new FileReader(fileName));
+            reader = new BufferedReader(new FileReader(timeLineNames));
             while(reader.ready()){
                 raw = reader.readLine();
                 String[] parsed = raw.split(";");
@@ -42,6 +48,19 @@ public class FileIO {
                 timelines.add(timeline);
             }
         }catch(Exception ex){}
+        try{
+            reader = new BufferedReader(new FileReader(catNames));
+            while(reader.ready()){
+                raw = reader.readLine();
+                String[] parsed = raw.split(";");
+                Category category = new Category(parsed[0]);
+                Integer red = Integer.parseInt(parsed[1]);
+                Integer green = Integer.parseInt(parsed[2]);
+                Integer blue = Integer.parseInt(parsed[3]);
+                category.setColor(new Color(red,green,blue));
+                categories.add(category);
+            }
+        }catch(Exception ex){}
     }
     /*
      * @return The current ArrayList of Timelines.
@@ -53,7 +72,7 @@ public class FileIO {
      * @param name The name of the Timeline to load.
      * @return The timeLine of that name or a new Timeline with "NoTimeline" as its name.
      */
-    public Timeline load(String name){
+    /*public Timeline load(String name){
         for(Iterator it = timelines.iterator();it.hasNext();){
             Timeline timeline = (Timeline)it.next();
             if(timeline.getTitle().equals(name)){
@@ -62,13 +81,14 @@ public class FileIO {
         }
         return new Timeline("NoTimeline");
     }
+    */
     /*
      * @return True if the writing the file was successful, otherwise False.
      */
     public boolean save(){
         PrintWriter writer;
         try{
-            writer = new PrintWriter(fileName);
+            writer = new PrintWriter(timeLineNames);
         }catch(Exception ex){
             return false;
         }
@@ -91,6 +111,21 @@ public class FileIO {
                 writer.print(end+":");
                 writer.print(cat.toString()+";");
             }
+            writer.println();
+        }
+        try{
+            writer = new PrintWriter(catNames);
+        }catch(Exception ex){
+            return false;
+        }
+        //each category is on a seperate line
+        //semi-colon will seperate parts of category
+        for(Iterator tLines = categories.iterator();tLines.hasNext();){
+            Category category = (Category)tLines.next();
+            writer.print(category.getName()+";");
+            writer.print(category.getColor().getRed()+";");
+            writer.print(category.getColor().getGreen()+";");
+            writer.print(category.getColor().getBlue());
             writer.println();
         }
         return true;
