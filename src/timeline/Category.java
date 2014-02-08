@@ -9,6 +9,7 @@ import java.awt.Color;
 /**
  *
  * @author Daniel
+ * and Kayley
  */
 // A very simple class created to easily use all the variables we would need to describe a category. 
 class Category{
