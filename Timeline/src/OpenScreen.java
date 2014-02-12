@@ -3,11 +3,15 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
 public class OpenScreen extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form OpenScreen
      */
+    private final FileIO fileIO;
+    
     public OpenScreen(FileIO fileIO) {
+        this.fileIO = fileIO;
+        fileIO.addCategory(new Category("Default"));
         initComponents();
     }
 
@@ -24,7 +28,6 @@ public class OpenScreen extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         jLabel2 = new javax.swing.JLabel();
         manageTButton = new javax.swing.JButton();
         displayButton = new javax.swing.JButton();
@@ -76,46 +79,6 @@ public class OpenScreen extends javax.swing.JFrame {
 
         pack();
     }
-
-// </editor-fold>//GEN-END:initComponents
-
-    /**
-     * @param args the command line arguments
-     */
-    /*public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        /*try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(OpenScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(OpenScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(OpenScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(OpenScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new OpenScreen().setVisible(true);
-            }
-        });
-    }
-    */
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-
     
 private class MenuListener implements ActionListener{
     
@@ -125,20 +88,18 @@ private class MenuListener implements ActionListener{
     public void actionPerformed(ActionEvent ae){
         JButton thisButton = (JButton) ae.getSource();
         if(thisButton == manageTButton){
-            jLabel2.setText("ACTION LISTENER WORKED :)");
                     /* Create and display the form */
             EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ManageTimelines mt = new ManageTimelines();
+                ManageTimelines mt = new ManageTimelines(fileIO);
                 mt.setVisible(true);
             }
            });
        }else if(thisButton == displayButton){
-            jLabel2.setText("displayed :)");
                     /* Create and display the form */
             EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DisplayTimelines dt = new DisplayTimelines();
+                DisplayTimelines dt = new DisplayTimelines(fileIO);
                 dt.setVisible(true);
             }
            });
@@ -146,7 +107,7 @@ private class MenuListener implements ActionListener{
        }else if(thisButton == manageCButton){
             EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ManageCategories mc = new ManageCategories();
+                ManageCategories mc = new ManageCategories(fileIO);
                 mc.setVisible(true);
             }
            });    

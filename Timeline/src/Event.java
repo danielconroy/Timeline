@@ -1,8 +1,11 @@
 class Event{
 	private String description, title;
-	private int startDate, endDate;
+	private Integer startDate, endDate;
 	private Category category;
 
+        public Event(String title){
+            this.title = title;
+        }
         public Event(String title, String des, int startDate, int endDate, Category category){
 		this.title = title;
                 this.description = des;
@@ -29,10 +32,10 @@ class Event{
 	public String getTitle(){
 		return title;
 	}
-	public int getStartDate(){
+	public Integer getStartDate(){
 		return startDate;
 	}
-	public int getEndDate(){
+	public Integer getEndDate(){
 		return endDate;
 	}
 	public Category getCategory(){

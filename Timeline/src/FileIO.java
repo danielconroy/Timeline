@@ -62,6 +62,10 @@ public class FileIO {
     public ArrayList<Timeline> loadAll(){
         return timelines;
     }
+    
+    public ArrayList<Category> getCategories(){
+        return categories;
+    }
     /*
      * @param name The name of the Timeline to load.
      * @return The timeLine of that name or a new Timeline with "NoTimeline" as its name.
@@ -126,10 +130,35 @@ public class FileIO {
     }
     /*
      * @param Timeline The Timeline to add.
+     * returns false if a timeline with that title already exists, true otherwise.
      */
-    public void addTimeline(Timeline t){
-        timelines.add(t);
+    public boolean addTimeline(Timeline t){
+        if(containsTitle(t)) return false;
+        else timelines.add(t);
+        return true;
     }
+    
+    public boolean addCategory(Category c){
+        if(containsTitle(c)) return false;
+        else categories.add(c);
+        return true;        
+    }
+    
+    /* 
+     *  returns true if timelines contains a timeline of the same title as parameter. 
+    */
+    public boolean containsTitle(Timeline time){
+        for(Timeline t : timelines){
+            if(t.getTitle().equals(time.getTitle())) return true;
+        }return false;
+    }
+    
+    public boolean containsTitle(Category cat){
+        for(Category c : categories){
+            if(c.getName().equals(cat.getName())) return true;
+        }return false;
+    }
+
     /*
      * @param name The name of the Timeline to be deleted.
      * @return True if found and removed, else False.
@@ -144,6 +173,11 @@ public class FileIO {
         }
         return false;
     }
+    
+    public boolean deleteTimeline(Timeline t){
+        return timelines.remove(t);
+    }
+
     /*
      * @return The ArrayList of the names of the current Timelines.
      */
@@ -155,4 +189,5 @@ public class FileIO {
         }
         return names;
     }
+    
 }

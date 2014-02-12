@@ -1,9 +1,26 @@
+
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+
 public class EditTimeline extends javax.swing.JFrame {
 
     /**
      * Creates new form EditTimeline
      */
-    public EditTimeline() {
+    private Timeline timeline;
+    private FileIO fileIO;
+    private Event selectedEvent;
+    private JButton editButton;
+    private JButton createButton;
+    private JButton deleteButton;
+    private JComboBox jComboBox1;
+    private JLabel jLabel1;
+    private JTextField nameTextField;
+    
+    public EditTimeline(Timeline timeline, FileIO fileIO) {
+        this.timeline = timeline;
+        this.fileIO = fileIO;
         initComponents();
     }
 
@@ -18,25 +35,26 @@ public class EditTimeline extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        editButton = new javax.swing.JButton();
+        deleteButton = new javax.swing.JButton();
+        createButton = new javax.swing.JButton();
+        nameTextField = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        setComboBox();
+        jComboBox1.addActionListener(new ComboBoxListener());
+        
         jLabel1.setText("Edit Timeline");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jButton1.setText("Edit Event");
-
-        jButton3.setText("Delete Event");
-
-        jButton2.setText("Create Event");
-
-        jTextField1.setText("<Name>");
-
+        editButton.setText("Edit Event");
+        deleteButton.setText("Delete Event");
+        createButton.setText("Create Event");
+        nameTextField.setText("<Name>");
+        
+        editButton.addActionListener(new ETListener());
+        deleteButton.addActionListener(new ETListener());
+        createButton.addActionListener(new ETListener());
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -47,17 +65,17 @@ public class EditTimeline extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(84, 84, 84)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3)
-                            .addComponent(jButton2))))
+                            .addComponent(deleteButton)
+                            .addComponent(createButton))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -68,59 +86,86 @@ public class EditTimeline extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(editButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(deleteButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(createButton)
+                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditTimeline.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditTimeline.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditTimeline.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditTimeline.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditTimeline().setVisible(true);
-            }
-        });
+    
+private void setComboBox(){
+    ArrayList<Event> events =  timeline.getEvents();
+    String[] names = new String[events.size()+1];
+    names[0] = "All Events";
+    int i = 1;
+    for(Event e : events){
+            names[i++] = e.getTitle();
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    // End of variables declaration//GEN-END:variables
+    jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
+}
+
+private class ETListener implements ActionListener{
+    
+    public ETListener(){
+    }
+    
+    public void actionPerformed(ActionEvent ae){
+        JButton thisButton = (JButton) ae.getSource();
+        if(thisButton == editButton){
+            if(selectedEvent.getTitle() == null) return;
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EditEvent(selectedEvent, fileIO).setVisible(true);
+            }
+            });
+            
+       }else if(thisButton == deleteButton){
+           if(selectedEvent.getTitle() != null){
+               timeline.deleteEvent(selectedEvent);
+               setComboBox();
+           }
+       }else if(thisButton == createButton){
+           
+            java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                Event event = new Event(nameTextField.getText()); 
+                new EditEvent(event, fileIO).setVisible(true);
+                timeline.addEvent(event);
+                selectedEvent = event;
+                setComboBox();                 
+            }
+            });
+       }
+    }
+    
+    }
+
+private class ComboBoxListener implements ActionListener{
+    
+    public ComboBoxListener(){
+        
+    }
+    
+    public void actionPerformed(ActionEvent ae){
+        JComboBox thisBox = (JComboBox) ae.getSource();
+        
+        thisBox.getSelectedItem( ).equals( "female" );
+        
+        for(Event e : timeline.getEvents()){
+            if(thisBox.getSelectedItem().equals(e.getTitle())){
+                selectedEvent = e;
+                break;
+            }
+        }
+
+    }
+}
+
 }
