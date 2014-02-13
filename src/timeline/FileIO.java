@@ -1,15 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package timeline;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.awt.Color;
 
 /**
@@ -62,12 +54,7 @@ public class FileIO {
             }
         }catch(Exception ex){}
     }
-    /*
-     * @return The current ArrayList of Timelines.
-     */
-    public ArrayList<Timeline> loadAll(){
-        return timelines;
-    }
+    
     /*
      * @param name The name of the Timeline to load.
      * @return The timeLine of that name or a new Timeline with "NoTimeline" as its name.
@@ -132,10 +119,35 @@ public class FileIO {
     }
     /*
      * @param Timeline The Timeline to add.
+     * returns false if a timeline with that title already exists, true otherwise.
      */
-    public void addTimeline(Timeline t){
-        timelines.add(t);
+    public boolean addTimeline(Timeline t){
+        if(containsTitle(t)) return false;
+        else timelines.add(t);
+        return true;
     }
+    
+    public boolean addCategory(Category c){
+        if(containsTitle(c)) return false;
+        else categories.add(c);
+        return true;        
+    }
+    
+    /* 
+     *  returns true if timelines contains a timeline of the same title as parameter. 
+    */
+    public boolean containsTitle(Timeline time){
+        for(Timeline t : timelines){
+            if(t.getTitle().equals(time.getTitle())) return true;
+        }return false;
+    }
+    
+    public boolean containsTitle(Category cat){
+        for(Category c : categories){
+            if(c.getName().equals(cat.getName())) return true;
+        }return false;
+    }
+
     /*
      * @param name The name of the Timeline to be deleted.
      * @return True if found and removed, else False.
@@ -150,6 +162,26 @@ public class FileIO {
         }
         return false;
     }
+    
+    public boolean deleteTimeline(Timeline t){
+        return timelines.remove(t);
+    }
+    
+    public boolean deleteCategory(String name){
+        for(Iterator it = categories.iterator();it.hasNext();){
+            Category category = (Category)it.next();
+            if(category.getName().equals(name)){
+                categories.remove(category);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deleteCategory(Category cat){
+        return categories.remove(cat);
+    }
+
     /*
      * @return The ArrayList of the names of the current Timelines.
      */
@@ -161,4 +193,47 @@ public class FileIO {
         }
         return names;
     }
+    
+    public Iterator<Category> getCategoryIterator(){
+        return new Iterator<Category>() {
+        // Start stepping through the array from the beginning
+        private int nextIndex = 0;
+        public boolean hasNext() {
+            // Check if the current element is the last in the array
+            return (nextIndex < categories.size());
+        }        
+        public Category next() {
+            return categories.get(nextIndex++);
+        }
+        public void remove(){  
+            categories.remove(nextIndex);
+        }
+    };
+    }
+ 
+    public Iterator<Timeline> getTimelineIterator(){
+        return new Iterator<Timeline>() {
+        // Start stepping through the array from the beginning
+        private int nextIndex = 0;
+        public boolean hasNext() {
+            // Check if the current element is the last in the array
+            return (nextIndex < timelines.size());
+        }        
+        public Timeline next() {
+            return timelines.get(nextIndex++);
+        }
+        public void remove(){  
+            timelines.remove(nextIndex);
+        }
+    };
+    }
+
+    public int catSize(){
+        return categories.size();
+    }
+    
+    public int timeSize(){
+        return timelines.size();
+    }
+    
 }
