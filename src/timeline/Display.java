@@ -76,13 +76,11 @@ class Surface extends JPanel{
             Event e = it.next();
             int sDate = e.getStartDate();
             int eDate = e.getEndDate();
-            if(e.hasStartDate()){
-                if(sDate<start)
-                    start = sDate;
-                if(sDate>end)
-                    end = sDate;
-            }
-            if(e.hasEndDate()){
+            if(sDate<start)
+                start = sDate;
+            if(sDate>end)
+                end = sDate;
+            if(e.getEndDate()!=null){
                 if(eDate<start)
                     start = eDate;
                 if(eDate>end)
