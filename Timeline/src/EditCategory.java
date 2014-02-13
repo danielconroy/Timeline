@@ -10,8 +10,10 @@ public class EditCategory extends javax.swing.JFrame {
      * Creates new form EditCategory
      */
     private Category category;
+    private final FileIO fileIO;
     
-    public EditCategory(Category category) {
+    public EditCategory(Category category, FileIO fileIO) {
+        this.fileIO = fileIO;
         this.category = category;
         initComponents();
     }
@@ -140,6 +142,8 @@ public class EditCategory extends javax.swing.JFrame {
         if(!makeColor()) return;
         Color color = new Color(r, g, b);
         category.setColor(color);
+        fileIO.addCategory(category);
+        fileIO.save();
     }
     
     //Returns true if successful, false if failed.

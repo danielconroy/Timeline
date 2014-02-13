@@ -136,7 +136,7 @@ public class ManageCategories extends javax.swing.JFrame {
             if(thisButton == editButton){
                 java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new EditCategory(selectedCategory).setVisible(true);
+                    new EditCategory(selectedCategory, fileIO).setVisible(true);
                 }
             });
 

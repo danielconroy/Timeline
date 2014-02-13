@@ -58,7 +58,7 @@ public class ManageTimelines extends javax.swing.JFrame {
 
         titleLabel.setText("Manage Timelines");
 
-                try{
+        try{
             titleLabel.setFont(new Font("Vijaya", 0, 42));
         }catch(Exception e){
             titleLabel.setFont(new Font("Times new Roman", 0, 34));
@@ -151,7 +151,7 @@ private class MTListener implements ActionListener{
                fileIO.deleteTimeline(selectedTimeline);
                setComboBox();
            }
-           
+           fileIO.save();
        }else if(thisButton == createButton){
            String name = nameTextField.getText();
            if(name.equals("<Name>")) return;
@@ -165,6 +165,7 @@ private class MTListener implements ActionListener{
                 new EditTimeline(selectedTimeline, fileIO).setVisible(true);
             }
         });
+        fileIO.save();
        }
     }
     

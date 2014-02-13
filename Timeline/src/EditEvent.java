@@ -1,5 +1,6 @@
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -27,9 +28,9 @@ public class EditEvent extends javax.swing.JFrame {
     private final FileIO fileIO;
     private JButton finishedButton;
     private JComboBox jComboBox1;
-    private JLabel jLabel1;
+    private JLabel titleLabel;
     private JTextField nameTextField;
-    private JTextField descriptionTextField;
+    private JTextArea descriptionTextArea;
     private JTextField startTextField;
     private JTextField endTextField;
 
@@ -48,17 +49,27 @@ public class EditEvent extends javax.swing.JFrame {
         int x = (int) ((d.getWidth() - getWidth()) / 2);
         setLocation(x, y);
         
-        jLabel1 = new javax.swing.JLabel();
-        nameTextField = new javax.swing.JTextField();
-        descriptionTextField = new javax.swing.JTextField();
-        startTextField = new javax.swing.JTextField();
-        endTextField = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox();
-        finishedButton = new javax.swing.JButton();
+        titleLabel = new JLabel();
+        nameTextField = new JTextField();
+        descriptionTextArea = new JTextArea();
+        descriptionTextArea.setPreferredSize( new Dimension( 100, 136 ) );
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setWrapStyleWord(true);
+
+        
+        startTextField = new JTextField();
+        endTextField = new JTextField();
+        jComboBox1 = new JComboBox();
+        finishedButton = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jLabel1.setText("Edit Event");
+        
+        try{
+            titleLabel.setFont(new Font("Vijaya", 0, 42));
+        }catch(Exception e){
+            titleLabel.setFont(new Font("Times new Roman", 0, 34));
+        }
+        titleLabel.setText("Edit Event");
 
         fillTextFields();
         setComboBox();
@@ -70,39 +81,37 @@ public class EditEvent extends javax.swing.JFrame {
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1)
+                    .addComponent(titleLabel)
                     .addComponent(nameTextField)
-                    .addComponent(descriptionTextField)
                     .addComponent(startTextField)
                     .addComponent(endTextField)
                     .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(finishedButton, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(descriptionTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(titleLabel)    
+                .addComponent(descriptionTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)    
+                )
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(titleLabel)     
                 .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(endTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(finishedButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+            );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -113,9 +122,9 @@ public class EditEvent extends javax.swing.JFrame {
         else
             nameTextField.setText("<Name>");
         if(event.getDescription()!=null)
-            descriptionTextField.setText(event.getDescription());
+            descriptionTextArea.setText(event.getDescription());
         else
-            descriptionTextField.setText("<Des>");
+            descriptionTextArea.setText("<Des>");
         if(event.getStartDate()!=null)
             startTextField.setText(""+event.getStartDate());
         else
@@ -128,15 +137,15 @@ public class EditEvent extends javax.swing.JFrame {
     
     private void setComboBox(){
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
-        String[] names = new String[fileIO.catSize()];
+        String[] names = new String[fileIO.catSize()+1];
         int i = 0;
         int catIndex = 0;
         Category c = new Category("Base");
         while(categoryIterator.hasNext()){
             c = categoryIterator.next();
-
             names[i++] = c.getName();
         }
+        names[i] = "New Category";
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
         selectedCategory = c;
         jComboBox1.setSelectedItem(event.getCategory().getName());
@@ -145,7 +154,8 @@ public class EditEvent extends javax.swing.JFrame {
     // Returns true if valid event, false if not.
     public boolean submitTextFields(){
         String name = nameTextField.getText();
-        String description = descriptionTextField.getText();
+        String description = descriptionTextArea.getText();
+        System.out.println(descriptionTextArea.getText());
         String startDate = startTextField.getText();
         String endDate = endTextField.getText();
         Integer start, end;
@@ -191,7 +201,8 @@ public class EditEvent extends javax.swing.JFrame {
             if(thisButton == finishedButton){
                 if(submitTextFields()){
                     timeline.addEvent(event);
-                    superTimeline.setComboBox();                 
+                    superTimeline.setComboBox();   
+                    fileIO.save();
                 }
                 setVisible(false);
                 dispose();
@@ -208,6 +219,18 @@ public class EditEvent extends javax.swing.JFrame {
     
     public void actionPerformed(ActionEvent ae){
         JComboBox thisBox = (JComboBox) ae.getSource();
+        
+        if(thisBox.getSelectedItem().equals("New Category")){
+              java.awt.EventQueue.invokeLater(new Runnable() {
+                   public void run() {
+                        new EditCategory(selectedCategory, fileIO).setVisible(true);
+                   }
+               });
+               
+               setComboBox(); // Reset combo box to display the new timeline.
+               return;
+        }
+        
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
         Category c;
         while(categoryIterator.hasNext()){

@@ -138,7 +138,7 @@ private class ETListener implements ActionListener{
     public void actionPerformed(ActionEvent ae){
         JButton thisButton = (JButton) ae.getSource();
         if(thisButton == editButton){
-            if(selectedEvent.getTitle() == null) return;
+            if(timeline.eventSize() == 0) return;
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new EditEvent(selectedEvent, fileIO, timeline, thisET).setVisible(true);
@@ -152,8 +152,8 @@ private class ETListener implements ActionListener{
                timeline.deleteEvent(selectedEvent);
                setComboBox();
            }
-       }else if(thisButton == createButton){
-           
+           fileIO.save();
+       }else if(thisButton == createButton){          
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Event event = new Event(nameTextField.getText()); 

@@ -88,14 +88,24 @@ public class FileIO {
             for(Iterator events = timeline.getEvents().iterator();events.hasNext();){
                 Event event = (Event)events.next();
                 String name = event.getTitle();
-                String des = event.getDescription();
-                int start = event.getStartDate();
-                int end = event.getEndDate();
                 Category cat = event.getCategory();
                 writer.print(name+":");
-                writer.print(des+":");
+                String des;
+                try{
+                    des = event.getDescription();
+                    writer.print(des+":");
+                }catch(Exception e){
+                    
+                }
+                int start = event.getStartDate();
+                int end;
+                try{
+                    end = event.getEndDate();
+                    writer.print(end+":");
+                }catch(Exception e){
+                    end = 0;
+                }
                 writer.print(start+":");
-                writer.print(end+":");
                 writer.print(cat.toString()+";");
             }
             writer.println();
