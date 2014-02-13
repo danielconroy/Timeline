@@ -1,21 +1,37 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package timeline;
 
-/**
- *
- * @author Daniel
- */
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.*;
+
 public class EditEvent extends javax.swing.JFrame {
 
     /**
      * Creates new form EditEvent
      */
-    public EditEvent() {
+    private Event event;
+    private Category selectedCategory;
+    private Timeline timeline;
+    private EditTimeline superTimeline;
+    
+    public EditEvent(Event event, FileIO fileIO, Timeline timeline, EditTimeline superTimeline) {
+        this.event = event;
+        this.fileIO = fileIO;
+        this.timeline = timeline;
+        this.superTimeline =superTimeline;
         initComponents();
     }
+
+    private final FileIO fileIO;
+    private JButton finishedButton;
+    private JComboBox jComboBox1;
+    private JLabel jLabel1;
+    private JTextField nameTextField;
+    private JTextField descriptionTextField;
+    private JTextField startTextField;
+    private JTextField endTextField;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -25,30 +41,32 @@ public class EditEvent extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        setResizable(false);
+        
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        int y = (int) ((d.getHeight() - getHeight()) / 2);        
+        int x = (int) ((d.getWidth() - getWidth()) / 2);
+        setLocation(x, y);
+        
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        nameTextField = new javax.swing.JTextField();
+        descriptionTextField = new javax.swing.JTextField();
+        startTextField = new javax.swing.JTextField();
+        endTextField = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
+        finishedButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Edit Event");
 
-        jTextField1.setText("<Name>");
+        fillTextFields();
+        setComboBox();
+        
+        jComboBox1.addActionListener(new ComboBoxListener());
 
-        jTextField2.setText("<Des>");
-
-        jTextField3.setText("<Start>");
-
-        jTextField4.setText("<End>");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jButton1.setText("Finished");
+        finishedButton.setText("Finished");
+        finishedButton.addActionListener(new EEListener());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -58,12 +76,12 @@ public class EditEvent extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4)
+                    .addComponent(nameTextField)
+                    .addComponent(descriptionTextField)
+                    .addComponent(startTextField)
+                    .addComponent(endTextField)
                     .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
+                    .addComponent(finishedButton, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -72,64 +90,134 @@ public class EditEvent extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(startTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(endTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(finishedButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditEvent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditEvent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditEvent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditEvent.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditEvent().setVisible(true);
-            }
-        });
+    public void fillTextFields(){
+        if(event.getTitle()!=null)
+            nameTextField.setText(event.getTitle());
+        else
+            nameTextField.setText("<Name>");
+        if(event.getDescription()!=null)
+            descriptionTextField.setText(event.getDescription());
+        else
+            descriptionTextField.setText("<Des>");
+        if(event.getStartDate()!=null)
+            startTextField.setText(""+event.getStartDate());
+        else
+            startTextField.setText("<Start>");
+        if(event.getEndDate()!=null)
+            endTextField.setText(""+event.getEndDate());  
+        else
+            endTextField.setText("<End>");
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    // End of variables declaration//GEN-END:variables
+    
+    private void setComboBox(){
+        Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
+        String[] names = new String[fileIO.catSize()];
+        int i = 0;
+        int catIndex = 0;
+        Category c = new Category("Base");
+        while(categoryIterator.hasNext()){
+            c = categoryIterator.next();
+
+            names[i++] = c.getName();
+        }
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
+        selectedCategory = c;
+        jComboBox1.setSelectedItem(event.getCategory().getName());
+    }
+    
+    // Returns true if valid event, false if not.
+    public boolean submitTextFields(){
+        String name = nameTextField.getText();
+        String description = descriptionTextField.getText();
+        String startDate = startTextField.getText();
+        String endDate = endTextField.getText();
+        Integer start, end;
+        //Name and startDate are essential descriptors. The others are optional.
+        if(name.equals("<Name>") || startDate.equals("<Start>")){
+            //Note: inform user they're wrong first.
+            return false;
+        }
+        try{
+            start = Integer.parseInt(startDate);
+        }catch(NumberFormatException e){
+            System.out.println("Invalid start date!");
+            return false;
+        }
+        
+        event.setTitle(name);
+        event.setStartDate(start);
+        event.setCategory(selectedCategory);
+        
+        if(!description.equals("<Des>")){
+            event.setDescription(description);
+        }
+        if(!endDate.equals("<End>")){
+            try{
+                end = Integer.parseInt(endDate);
+            }catch(NumberFormatException e){
+                System.out.println("Invalid end date!");
+                return false;
+            } 
+            //The end date can't happen before the starting date!
+            if(end >= start) event.setEndDate(end);
+        }
+        return true;
+    }
+
+    private class EEListener implements ActionListener{
+    
+        public EEListener(){
+        }
+    
+        public void actionPerformed(ActionEvent ae){
+            JButton thisButton = (JButton) ae.getSource();
+            if(thisButton == finishedButton){
+                if(submitTextFields()){
+                    timeline.addEvent(event);
+                    superTimeline.setComboBox();                 
+                }
+                setVisible(false);
+                dispose();
+            }
+        }
+    
+    }
+    
+    private class ComboBoxListener implements ActionListener{
+    
+    public ComboBoxListener(){
+        
+    }
+    
+    public void actionPerformed(ActionEvent ae){
+        JComboBox thisBox = (JComboBox) ae.getSource();
+        Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
+        Category c;
+        while(categoryIterator.hasNext()){
+            c = categoryIterator.next();
+            if(thisBox.getSelectedItem().equals(c.getName())){
+                selectedCategory = c;
+                break;
+            }            
+        }
+    }
+
+    }
 }
