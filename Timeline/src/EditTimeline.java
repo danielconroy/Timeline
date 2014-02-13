@@ -128,6 +128,7 @@ public void setComboBox(){
             names[i++] = e.getTitle();
     }
     jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
+    selectedEvent = null;
 }
 
 private class ETListener implements ActionListener{
@@ -139,6 +140,7 @@ private class ETListener implements ActionListener{
         JButton thisButton = (JButton) ae.getSource();
         if(thisButton == editButton){
             if(timeline.eventSize() == 0) return;
+            if(selectedEvent == null) return;
             java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new EditEvent(selectedEvent, fileIO, timeline, thisET).setVisible(true);
@@ -148,7 +150,7 @@ private class ETListener implements ActionListener{
        }else if(thisButton == deleteButton){
            //numbers
            if(timeline.eventSize() == 0) return;
-           if(selectedEvent.getTitle() != null){
+           if(selectedEvent != null){
                timeline.deleteEvent(selectedEvent);
                setComboBox();
            }
@@ -182,6 +184,7 @@ private class ComboBoxListener implements ActionListener{
                 selectedEvent = e;
                 break;
             }
+            selectedEvent = null;
         }
 
     }

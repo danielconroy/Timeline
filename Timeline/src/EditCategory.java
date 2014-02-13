@@ -11,8 +11,17 @@ public class EditCategory extends javax.swing.JFrame {
      */
     private Category category;
     private final FileIO fileIO;
+    private final EditEvent editEvent;
     
     public EditCategory(Category category, FileIO fileIO) {
+        editEvent = null;
+        this.fileIO = fileIO;
+        this.category = category;
+        initComponents();
+    }
+    
+    public EditCategory(Category category, FileIO fileIO, EditEvent editEvent) {
+        this.editEvent = editEvent;
         this.fileIO = fileIO;
         this.category = category;
         initComponents();
@@ -181,6 +190,7 @@ public class EditCategory extends javax.swing.JFrame {
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == finishedButton){
                 submitTextFields();
+                if(editEvent != null) editEvent.setComboBox();
                 setVisible(false);
                 dispose();
             }else if(thisButton == previewButton){

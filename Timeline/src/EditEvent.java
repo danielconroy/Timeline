@@ -16,12 +16,14 @@ public class EditEvent extends javax.swing.JFrame {
     private Category selectedCategory;
     private Timeline timeline;
     private EditTimeline superTimeline;
+    private EditEvent thisEditEvent;
     
     public EditEvent(Event event, FileIO fileIO, Timeline timeline, EditTimeline superTimeline) {
         this.event = event;
         this.fileIO = fileIO;
         this.timeline = timeline;
         this.superTimeline =superTimeline;
+        thisEditEvent = this;
         initComponents();
     }
 
@@ -135,7 +137,7 @@ public class EditEvent extends javax.swing.JFrame {
             endTextField.setText("<End>");
     }
     
-    private void setComboBox(){
+    public void setComboBox(){
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
         String[] names = new String[fileIO.catSize()+1];
         int i = 0;
@@ -223,7 +225,7 @@ public class EditEvent extends javax.swing.JFrame {
         if(thisBox.getSelectedItem().equals("New Category")){
               java.awt.EventQueue.invokeLater(new Runnable() {
                    public void run() {
-                        new EditCategory(selectedCategory, fileIO).setVisible(true);
+                        new EditCategory(selectedCategory, fileIO, thisEditEvent).setVisible(true);
                    }
                });
                

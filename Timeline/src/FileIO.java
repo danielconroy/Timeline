@@ -17,6 +17,7 @@ public class FileIO {
      * Constructor
      */
     public FileIO(){
+        System.out.println("TRYING TO READ");
         this.timelines = new ArrayList<Timeline>();
         this.categories = new ArrayList<Category>();
         timeLineNames = "TimeLineSave.txt";
@@ -24,6 +25,7 @@ public class FileIO {
         BufferedReader reader;
         String raw;
         try{
+            System.out.println("MAKIN THE READER");
             reader = new BufferedReader(new FileReader(timeLineNames));
             while(reader.ready()){
                 raw = reader.readLine();
@@ -32,14 +34,23 @@ public class FileIO {
                 Timeline timeline = new Timeline(timelineName);
                 for(int i = 1; i<parsed.length; i++){
                     String[] e = parsed[i].split(":");
-                    //order: title, category, startDate, endDate, category
-                    Event event = new Event(e[0],e[1],Integer.parseInt(e[2])
-                            ,Integer.parseInt(e[3]),new Category(e[4]));
-                    timeline.getEvents().add(event);
+                    Event event = new Event(e[0]);
+                    //order: title, description, startDate, endDate, category
+                    if(!e[1].equals("")){
+                        event.setDescription(e[1]);
+                    }
+                    event.setStartDate(Integer.parseInt(e[2]));
+                    if(!e[3].equals("")){
+                        event.setEndDate(Integer.parseInt(e[3]));
+                    }
+                    //Must save cat color info too!!!
+                    event.setCategory(new Category(e[4]));
+                    timeline.addEvent(event);
                 }
                 timelines.add(timeline);
             }
-        }catch(Exception ex){}
+        }catch(Exception ex){
+        }
         try{
             reader = new BufferedReader(new FileReader(catNames));
             while(reader.ready()){
@@ -73,6 +84,7 @@ public class FileIO {
      * @return True if the writing the file was successful, otherwise False.
      */
     public boolean save(){
+        System.out.println("SAVED");
         PrintWriter writer;
         try{
             writer = new PrintWriter(timeLineNames);
@@ -95,15 +107,15 @@ public class FileIO {
                     des = event.getDescription();
                     writer.print(des+":");
                 }catch(Exception e){
-                    
+                    writer.print(""+":");
                 }
                 int start = event.getStartDate();
-                int end;
+                Integer end;
                 try{
                     end = event.getEndDate();
                     writer.print(end+":");
                 }catch(Exception e){
-                    end = 0;
+                    writer.print(""+":");
                 }
                 writer.print(start+":");
                 writer.print(cat.toString()+";");
