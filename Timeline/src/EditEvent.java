@@ -1,4 +1,6 @@
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,10 +13,14 @@ public class EditEvent extends javax.swing.JFrame {
      */
     private Event event;
     private Category selectedCategory;
+    private Timeline timeline;
+    private EditTimeline superTimeline;
     
-    public EditEvent(Event event, FileIO fileIO) {
+    public EditEvent(Event event, FileIO fileIO, Timeline timeline, EditTimeline superTimeline) {
         this.event = event;
         this.fileIO = fileIO;
+        this.timeline = timeline;
+        this.superTimeline =superTimeline;
         initComponents();
     }
 
@@ -35,7 +41,13 @@ public class EditEvent extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        setResizable(false);
+        
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        int y = (int) ((d.getHeight() - getHeight()) / 2);        
+        int x = (int) ((d.getWidth() - getWidth()) / 2);
+        setLocation(x, y);
+        
         jLabel1 = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         descriptionTextField = new javax.swing.JTextField();
@@ -130,7 +142,8 @@ public class EditEvent extends javax.swing.JFrame {
         jComboBox1.setSelectedItem(event.getCategory().getName());
     }
     
-    public void submitTextFields(){
+    // Returns true if valid event, false if not.
+    public boolean submitTextFields(){
         String name = nameTextField.getText();
         String description = descriptionTextField.getText();
         String startDate = startTextField.getText();
@@ -139,13 +152,13 @@ public class EditEvent extends javax.swing.JFrame {
         //Name and startDate are essential descriptors. The others are optional.
         if(name.equals("<Name>") || startDate.equals("<Start>")){
             //Note: inform user they're wrong first.
-            return;
+            return false;
         }
         try{
             start = Integer.parseInt(startDate);
         }catch(NumberFormatException e){
             System.out.println("Invalid start date!");
-            return;
+            return false;
         }
         
         event.setTitle(name);
@@ -156,16 +169,16 @@ public class EditEvent extends javax.swing.JFrame {
             event.setDescription(description);
         }
         if(!endDate.equals("<End>")){
-        try{
-            end = Integer.parseInt(endDate);
-        }catch(NumberFormatException e){
-            System.out.println("Invalid end date!");
-            return;
-        } 
-        //The end date can't happen before the starting date!
-        if(end >= start) event.setEndDate(end);
+            try{
+                end = Integer.parseInt(endDate);
+            }catch(NumberFormatException e){
+                System.out.println("Invalid end date!");
+                return false;
+            } 
+            //The end date can't happen before the starting date!
+            if(end >= start) event.setEndDate(end);
         }
-        
+        return true;
     }
 
     private class EEListener implements ActionListener{
@@ -176,7 +189,10 @@ public class EditEvent extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == finishedButton){
-                submitTextFields();
+                if(submitTextFields()){
+                    timeline.addEvent(event);
+                    superTimeline.setComboBox();                 
+                }
                 setVisible(false);
                 dispose();
             }
@@ -193,8 +209,7 @@ public class EditEvent extends javax.swing.JFrame {
     public void actionPerformed(ActionEvent ae){
         JComboBox thisBox = (JComboBox) ae.getSource();
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
-        int i = 0;
-        Category c = new Category("Base");
+        Category c;
         while(categoryIterator.hasNext()){
             c = categoryIterator.next();
             if(thisBox.getSelectedItem().equals(c.getName())){

@@ -2,8 +2,7 @@
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
-public class OpenScreen extends javax.swing.JFrame {
-    
+public class OpenScreen extends JFrame {
     /**
      * Creates new form OpenScreen
      */
@@ -18,7 +17,7 @@ public class OpenScreen extends javax.swing.JFrame {
     private JButton manageTButton;
     private JButton displayButton;
     private JButton manageCButton;
-    private JLabel jLabel2;
+    private JLabel titleLabel;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,55 +27,56 @@ public class OpenScreen extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jLabel2 = new javax.swing.JLabel();
-        manageTButton = new javax.swing.JButton();
-        displayButton = new javax.swing.JButton();
-        manageCButton = new javax.swing.JButton();
+        setResizable(false);
+        
+        titleLabel = new JLabel();
+        manageTButton = new JButton();
+        displayButton = new JButton();
+        manageCButton = new JButton();
         
         manageTButton.addActionListener(new MenuListener());
         displayButton.addActionListener(new MenuListener());
         manageCButton.addActionListener(new MenuListener());
         
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel2.setFont(new java.awt.Font("Book Antiqua", 0, 24)); // NOI18N
-        jLabel2.setText("TimeLine");
+        try{
+            titleLabel.setFont(new Font("Vijaya", 0, 42));
+        }catch(Exception e){
+            titleLabel.setFont(new Font("Times new Roman", 0, 34));
+        }
+        titleLabel.setText(" TimeLine");
 
         manageTButton.setText("Manage Timelines");
-
         displayButton.setText("Display TimeLines");
-
         manageCButton.setText("Manage Categories");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(manageTButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(displayButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(manageCButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(jLabel2)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(manageTButton, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(displayButton, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(manageCButton, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(titleLabel))))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(titleLabel)
                 .addComponent(manageTButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(displayButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(manageCButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(manageCButton))
         );
-
+        
+        //titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         pack();
     }
     
@@ -107,7 +107,8 @@ private class MenuListener implements ActionListener{
        }else if(thisButton == manageCButton){
             EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ManageCategories mc = new ManageCategories(fileIO);
+                ManageCategories mc;
+                mc = new ManageCategories(fileIO);
                 mc.setVisible(true);
             }
            });    

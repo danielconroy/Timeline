@@ -16,6 +16,7 @@ class Timeline{
 	public String getTitle(){
 		return title;
 	}
+        
 	public ArrayList<Event> getEvents(){
 		return events;
 	}
@@ -25,9 +26,22 @@ class Timeline{
 	} 
 
 	public void addEvent(Event e){
-		events.add(e);
+            if(!containsTitle(e.getTitle()))
+                events.add(e);
 	}
+        
 	public void deleteEvent(Event e){
 		events.remove(e);
 	}
+        
+        public boolean containsTitle(String title){
+            for(Event e : events){
+                if(e.getTitle().equals(title)) return true;
+            }return false;
+        }
+        
+        public int eventSize(){
+            return events.size();
+        }
+
 }

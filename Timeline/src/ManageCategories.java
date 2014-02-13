@@ -1,4 +1,7 @@
 
+import java.awt.Component;
+import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -27,12 +30,18 @@ public class ManageCategories extends javax.swing.JFrame {
     private JButton createButton;
     private JButton deleteButton;
     private JComboBox jComboBox1;
-    private JLabel jLabel1;
+    private JLabel titleLabel;
     private JTextField nameTextField;
     
     private void initComponents() {
-
-        jLabel1 = new javax.swing.JLabel();
+        setResizable(false);
+        
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        int y = (int) ((d.getHeight() - getHeight()) / 2);        
+        int x = (int) ((d.getWidth() - getWidth()) / 2);
+        setLocation(x, y);
+        
+        titleLabel = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         editButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
@@ -41,8 +50,14 @@ public class ManageCategories extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Manage Categories");
-
+        titleLabel.setText("Manage Categories");
+        
+        try{
+            titleLabel.setFont(new Font("Vijaya", 0, 42));
+        }catch(Exception e){
+            titleLabel.setFont(new Font("Times new Roman", 0, 34));
+        }
+        
         setComboBox();
         
         editButton.setText("Edit Category");
@@ -56,52 +71,44 @@ public class ManageCategories extends javax.swing.JFrame {
         
         jComboBox1.addActionListener(new ComboBoxListener());
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(deleteButton))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(deleteButton, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(8, 8, 8)
-                            .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(editButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGap(84, 84, 84)
-                                    .addComponent(jLabel1))
+                                    .addComponent(titleLabel))
                                 .addGroup(layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(0, 0, Short.MAX_VALUE))))
-                .addContainerGap())
+                                    .addComponent(nameTextField, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(createButton, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)))
+                            ))))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(deleteButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(titleLabel)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(createButton)
-                    .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(nameTextField, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))    
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editButton))
+                .addComponent(deleteButton)
+)
         );
-
+       
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -146,6 +153,14 @@ public class ManageCategories extends javax.swing.JFrame {
                Category cat = new Category(name);
                fileIO.addCategory(cat);
                setComboBox(); // Reset combo box to display the new timeline.
+               jComboBox1.setSelectedItem(cat.getName());
+               selectedCategory = cat;
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new EditCategory(selectedCategory).setVisible(true);
+                }
+            });
+               
            }
         }
 
