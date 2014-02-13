@@ -1,6 +1,7 @@
 
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.*;
 
 public class EditEvent extends javax.swing.JFrame {
@@ -114,14 +115,19 @@ public class EditEvent extends javax.swing.JFrame {
     }
     
     private void setComboBox(){
-        ArrayList<Category> categories =  fileIO.getCategories();
-        String[] names = new String[categories.size()];
+        Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
+        String[] names = new String[fileIO.catSize()];
         int i = 0;
-        for(Category c : categories){
+        int catIndex = 0;
+        Category c = new Category("Base");
+        while(categoryIterator.hasNext()){
+            c = categoryIterator.next();
+
             names[i++] = c.getName();
         }
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
-        selectedCategory = categories.get(0);
+        selectedCategory = c;
+        jComboBox1.setSelectedItem(event.getCategory().getName());
     }
     
     public void submitTextFields(){
@@ -156,7 +162,8 @@ public class EditEvent extends javax.swing.JFrame {
             System.out.println("Invalid end date!");
             return;
         } 
-        event.setEndDate(end);
+        //The end date can't happen before the starting date!
+        if(end >= start) event.setEndDate(end);
         }
         
     }
@@ -185,14 +192,16 @@ public class EditEvent extends javax.swing.JFrame {
     
     public void actionPerformed(ActionEvent ae){
         JComboBox thisBox = (JComboBox) ae.getSource();
-     
-        for(Category c : fileIO.getCategories()){
+        Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
+        int i = 0;
+        Category c = new Category("Base");
+        while(categoryIterator.hasNext()){
+            c = categoryIterator.next();
             if(thisBox.getSelectedItem().equals(c.getName())){
                 selectedCategory = c;
                 break;
-            }
+            }            
         }
-
     }
 
     }

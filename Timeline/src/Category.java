@@ -12,6 +12,7 @@ class Category{
 
         public Category(String name){
 		this.name = name;
+                catColor = new Color(51, 255, 51);
 	}
 	Category(String name, Color catColor){
 		this.name = name;

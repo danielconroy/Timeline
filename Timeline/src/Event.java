@@ -5,6 +5,7 @@ class Event{
 
         public Event(String title){
             this.title = title;
+            category = new Category("Default");
         }
         public Event(String title, String des, int startDate, int endDate, Category category){
 		this.title = title;

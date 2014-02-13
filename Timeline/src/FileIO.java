@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.awt.Color;
 
 /**
@@ -56,16 +54,7 @@ public class FileIO {
             }
         }catch(Exception ex){}
     }
-    /*
-     * @return The current ArrayList of Timelines.
-     */
-    public ArrayList<Timeline> loadAll(){
-        return timelines;
-    }
     
-    public ArrayList<Category> getCategories(){
-        return categories;
-    }
     /*
      * @param name The name of the Timeline to load.
      * @return The timeLine of that name or a new Timeline with "NoTimeline" as its name.
@@ -177,6 +166,21 @@ public class FileIO {
     public boolean deleteTimeline(Timeline t){
         return timelines.remove(t);
     }
+    
+    public boolean deleteCategory(String name){
+        for(Iterator it = categories.iterator();it.hasNext();){
+            Category category = (Category)it.next();
+            if(category.getName().equals(name)){
+                categories.remove(category);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deleteCategory(Category cat){
+        return categories.remove(cat);
+    }
 
     /*
      * @return The ArrayList of the names of the current Timelines.
@@ -188,6 +192,48 @@ public class FileIO {
             names.add(timeline.getTitle());
         }
         return names;
+    }
+    
+    public Iterator<Category> getCategoryIterator(){
+        return new Iterator<Category>() {
+        // Start stepping through the array from the beginning
+        private int nextIndex = 0;
+        public boolean hasNext() {
+            // Check if the current element is the last in the array
+            return (nextIndex < categories.size());
+        }        
+        public Category next() {
+            return categories.get(nextIndex++);
+        }
+        public void remove(){  
+            categories.remove(nextIndex);
+        }
+    };
+    }
+ 
+    public Iterator<Timeline> getTimelineIterator(){
+        return new Iterator<Timeline>() {
+        // Start stepping through the array from the beginning
+        private int nextIndex = 0;
+        public boolean hasNext() {
+            // Check if the current element is the last in the array
+            return (nextIndex < timelines.size());
+        }        
+        public Timeline next() {
+            return timelines.get(nextIndex++);
+        }
+        public void remove(){  
+            timelines.remove(nextIndex);
+        }
+    };
+    }
+
+    public int catSize(){
+        return categories.size();
+    }
+    
+    public int timeSize(){
+        return timelines.size();
     }
     
 }

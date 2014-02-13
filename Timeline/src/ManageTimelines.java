@@ -2,6 +2,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.*;
 
 public class ManageTimelines extends javax.swing.JFrame {
@@ -129,14 +130,17 @@ public class ManageTimelines extends javax.swing.JFrame {
     
     */
 private void setComboBox(){
-    ArrayList<Timeline> timelines =  fileIO.loadAll();
-    String[] names = new String[timelines.size()+1];
-    names[0] = "All Timelines";
+    Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
+    String[] names = new String[fileIO.timeSize()+1];
     int i = 1;
-    for(Timeline t : timelines){
-            names[i++] = t.getTitle();
+    names[0] = "All Timelines";
+    Timeline t = new Timeline("Base");
+    while(timelineIterator.hasNext()){
+        t = timelineIterator.next();
+        names[i++] = t.getTitle();
     }
     jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
+    
 }
      
 private class MTListener implements ActionListener{
@@ -169,6 +173,8 @@ private class MTListener implements ActionListener{
            Timeline time = new Timeline(name);
            fileIO.addTimeline(time);
            setComboBox(); // Reset combo box to display the new timeline.
+           jComboBox1.setSelectedItem(time.getTitle());
+           selectedTimeline = time;
        }
     }
     
@@ -183,15 +189,15 @@ private class ComboBoxListener implements ActionListener{
     public void actionPerformed(ActionEvent ae){
         JComboBox thisBox = (JComboBox) ae.getSource();
         
-        thisBox.getSelectedItem( ).equals( "female" );
-        
-        for(Timeline t : fileIO.loadAll()){
+        Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
+        Timeline t;
+        while(timelineIterator.hasNext()){
+            t = timelineIterator.next();
             if(thisBox.getSelectedItem().equals(t.getTitle())){
                 selectedTimeline = t;
                 break;
-            }
+            }            
         }
-
     }
     
 }
