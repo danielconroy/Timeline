@@ -1,3 +1,6 @@
+
+package timeline;
+
 class Event{
 	private String description, title;
 	private Integer startDate, endDate;

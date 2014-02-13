@@ -1,3 +1,6 @@
+
+package timeline;
+
 import java.awt.Color;
 
 /**
