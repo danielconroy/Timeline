@@ -1,3 +1,4 @@
+package timeline;
 
 import java.awt.*;
 import java.awt.event.*;

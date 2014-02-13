@@ -1,3 +1,5 @@
+package timeline;
+
 import javax.swing.*;
 
 /**

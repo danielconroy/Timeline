@@ -1,3 +1,4 @@
+package timeline;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -90,7 +91,7 @@ public class DisplayTimelines extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
     private void setComboBox(){
         Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();

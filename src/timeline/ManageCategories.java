@@ -1,3 +1,4 @@
+package timeline;
 
 import java.awt.Component;
 import java.awt.*;
@@ -110,7 +111,7 @@ public class ManageCategories extends javax.swing.JFrame {
         );
        
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
 
     private void setComboBox(){
