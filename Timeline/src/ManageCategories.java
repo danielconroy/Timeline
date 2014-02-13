@@ -134,7 +134,6 @@ public class ManageCategories extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == editButton){
-                if(fileIO.catSize()==1) return;
                 java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     new EditCategory(selectedCategory).setVisible(true);
@@ -155,12 +154,7 @@ public class ManageCategories extends javax.swing.JFrame {
                setComboBox(); // Reset combo box to display the new timeline.
                jComboBox1.setSelectedItem(cat.getName());
                selectedCategory = cat;
-                java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new EditCategory(selectedCategory).setVisible(true);
-                }
-            });
-               
+              
            }
         }
 

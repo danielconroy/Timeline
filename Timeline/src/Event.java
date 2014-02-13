@@ -37,7 +37,10 @@ class Event{
 		return startDate;
 	}
 	public Integer getEndDate(){
-		return endDate;
+             if(endDate != null)
+                 return endDate;
+             else
+                 return Integer.MAX_VALUE;
 	}
 	public Category getCategory(){
 		return category;

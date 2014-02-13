@@ -129,7 +129,6 @@ private void setComboBox(){
         names[i++] = t.getTitle();
     }
     jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
-    
 }
      
 private class MTListener implements ActionListener{
