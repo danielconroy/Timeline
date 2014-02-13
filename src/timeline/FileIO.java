@@ -1,15 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
+
 package timeline;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 import java.awt.Color;
 
 /**
@@ -25,6 +21,7 @@ public class FileIO {
      * Constructor
      */
     public FileIO(){
+        System.out.println("TRYING TO READ");
         this.timelines = new ArrayList<Timeline>();
         this.categories = new ArrayList<Category>();
         timeLineNames = "TimeLineSave.txt";
@@ -32,6 +29,7 @@ public class FileIO {
         BufferedReader reader;
         String raw;
         try{
+            System.out.println("MAKIN THE READER");
             reader = new BufferedReader(new FileReader(timeLineNames));
             while(reader.ready()){
                 raw = reader.readLine();
@@ -40,14 +38,23 @@ public class FileIO {
                 Timeline timeline = new Timeline(timelineName);
                 for(int i = 1; i<parsed.length; i++){
                     String[] e = parsed[i].split(":");
-                    //order: title, category, startDate, endDate, category
-                    Event event = new Event(e[0],e[1],Integer.parseInt(e[2])
-                            ,Integer.parseInt(e[3]),new Category(e[4]));
-                    timeline.getEvents().add(event);
+                    Event event = new Event(e[0]);
+                    //order: title, description, startDate, endDate, category
+                    if(!e[1].equals("")){
+                        event.setDescription(e[1]);
+                    }
+                    event.setStartDate(Integer.parseInt(e[2]));
+                    if(!e[3].equals("")){
+                        event.setEndDate(Integer.parseInt(e[3]));
+                    }
+                    //Must save cat color info too!!!
+                    event.setCategory(new Category(e[4]));
+                    timeline.addEvent(event);
                 }
                 timelines.add(timeline);
             }
-        }catch(Exception ex){}
+        }catch(Exception ex){
+        }
         try{
             reader = new BufferedReader(new FileReader(catNames));
             while(reader.ready()){
@@ -62,12 +69,7 @@ public class FileIO {
             }
         }catch(Exception ex){}
     }
-    /*
-     * @return The current ArrayList of Timelines.
-     */
-    public ArrayList<Timeline> loadAll(){
-        return timelines;
-    }
+    
     /*
      * @param name The name of the Timeline to load.
      * @return The timeLine of that name or a new Timeline with "NoTimeline" as its name.
@@ -86,6 +88,7 @@ public class FileIO {
      * @return True if the writing the file was successful, otherwise False.
      */
     public boolean save(){
+        System.out.println("SAVED");
         PrintWriter writer;
         try{
             writer = new PrintWriter(timeLineNames);
@@ -101,14 +104,24 @@ public class FileIO {
             for(Iterator events = timeline.getEvents().iterator();events.hasNext();){
                 Event event = (Event)events.next();
                 String name = event.getTitle();
-                String des = event.getDescription();
-                int start = event.getStartDate();
-                int end = event.getEndDate();
                 Category cat = event.getCategory();
                 writer.print(name+":");
-                writer.print(des+":");
+                String des;
+                try{
+                    des = event.getDescription();
+                    writer.print(des+":");
+                }catch(Exception e){
+                    writer.print(""+":");
+                }
+                int start = event.getStartDate();
+                Integer end;
+                try{
+                    end = event.getEndDate();
+                    writer.print(end+":");
+                }catch(Exception e){
+                    writer.print(""+":");
+                }
                 writer.print(start+":");
-                writer.print(end+":");
                 writer.print(cat.toString()+";");
             }
             writer.println();
@@ -132,10 +145,35 @@ public class FileIO {
     }
     /*
      * @param Timeline The Timeline to add.
+     * returns false if a timeline with that title already exists, true otherwise.
      */
-    public void addTimeline(Timeline t){
-        timelines.add(t);
+    public boolean addTimeline(Timeline t){
+        if(containsTitle(t)) return false;
+        else timelines.add(t);
+        return true;
     }
+    
+    public boolean addCategory(Category c){
+        if(containsTitle(c)) return false;
+        else categories.add(c);
+        return true;        
+    }
+    
+    /* 
+     *  returns true if timelines contains a timeline of the same title as parameter. 
+    */
+    public boolean containsTitle(Timeline time){
+        for(Timeline t : timelines){
+            if(t.getTitle().equals(time.getTitle())) return true;
+        }return false;
+    }
+    
+    public boolean containsTitle(Category cat){
+        for(Category c : categories){
+            if(c.getName().equals(cat.getName())) return true;
+        }return false;
+    }
+
     /*
      * @param name The name of the Timeline to be deleted.
      * @return True if found and removed, else False.
@@ -150,6 +188,26 @@ public class FileIO {
         }
         return false;
     }
+    
+    public boolean deleteTimeline(Timeline t){
+        return timelines.remove(t);
+    }
+    
+    public boolean deleteCategory(String name){
+        for(Iterator it = categories.iterator();it.hasNext();){
+            Category category = (Category)it.next();
+            if(category.getName().equals(name)){
+                categories.remove(category);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deleteCategory(Category cat){
+        return categories.remove(cat);
+    }
+
     /*
      * @return The ArrayList of the names of the current Timelines.
      */
@@ -161,4 +219,47 @@ public class FileIO {
         }
         return names;
     }
+    
+    public Iterator<Category> getCategoryIterator(){
+        return new Iterator<Category>() {
+        // Start stepping through the array from the beginning
+        private int nextIndex = 0;
+        public boolean hasNext() {
+            // Check if the current element is the last in the array
+            return (nextIndex < categories.size());
+        }        
+        public Category next() {
+            return categories.get(nextIndex++);
+        }
+        public void remove(){  
+            categories.remove(nextIndex);
+        }
+    };
+    }
+ 
+    public Iterator<Timeline> getTimelineIterator(){
+        return new Iterator<Timeline>() {
+        // Start stepping through the array from the beginning
+        private int nextIndex = 0;
+        public boolean hasNext() {
+            // Check if the current element is the last in the array
+            return (nextIndex < timelines.size());
+        }        
+        public Timeline next() {
+            return timelines.get(nextIndex++);
+        }
+        public void remove(){  
+            timelines.remove(nextIndex);
+        }
+    };
+    }
+
+    public int catSize(){
+        return categories.size();
+    }
+    
+    public int timeSize(){
+        return timelines.size();
+    }
+    
 }

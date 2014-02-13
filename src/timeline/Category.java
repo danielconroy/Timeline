@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package timeline;
 
 import java.awt.Color;
@@ -15,22 +12,23 @@ import java.awt.Color;
 class Category{
 	private String name;
 	private Color catColor; // GUI Color of the category.
-	
+
         public Category(String name){
 		this.name = name;
+                catColor = new Color(51, 255, 51);
 	}
 	Category(String name, Color catColor){
 		this.name = name;
 		this.catColor = catColor;
 	}
-	
+
 	public String getName(){
 		return name;
 	}
 	public Color getColor(){
 		return catColor;
 	}
-	
+
 	public void setName(String name){
 		this.name = name;
 	}
