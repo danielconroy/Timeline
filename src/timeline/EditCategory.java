@@ -37,7 +37,7 @@ public class EditCategory extends javax.swing.JFrame {
     
     private JButton previewButton;
     private JButton finishedButton;
-    private JLabel jLabel1;
+    private JLabel titleLabel;
     private JLabel jLabel2;
     private JLabel jLabel3;
     private JLabel jLabel4;
@@ -62,7 +62,7 @@ public class EditCategory extends javax.swing.JFrame {
         int x = (int) ((d.getWidth() - getWidth()) / 2);
         setLocation(x, y);
         
-        jLabel1 = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -74,7 +74,13 @@ public class EditCategory extends javax.swing.JFrame {
         finishedButton = new javax.swing.JButton();
         jTextField5 = new javax.swing.JTextField();
 
-        jLabel1.setText("Edit Category");
+        titleLabel.setText("Edit Category");
+        
+        try{
+            titleLabel.setFont(new Font("Vijaya", 0, 22));
+        }catch(Exception e){
+            titleLabel.setFont(new Font("Times new Roman", 0, 16));
+        }
         
         fillTextFields();
         makeColor();
@@ -112,7 +118,7 @@ public class EditCategory extends javax.swing.JFrame {
                                 .addComponent(redTextField))
                             .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel1))
+                        .addComponent(titleLabel))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(previewButton)
                         .addComponent(jTextField5))))
@@ -121,7 +127,7 @@ public class EditCategory extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(titleLabel)
                 .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)

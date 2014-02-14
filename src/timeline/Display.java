@@ -1,19 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package timeline;
 
-import java.awt.Dimension;
-import java.awt.Insets;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Color;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.awt.*;
+import javax.swing.*;
+import java.util.*;
 import java.text.DecimalFormat;
 
 /**
@@ -49,13 +39,13 @@ public class Display extends JFrame{
 }
 class Surface extends JPanel{
     private Double factor;
-    private ArrayList<Event> events = new ArrayList<Event>();
+    private ArrayList<Event> events = new ArrayList<Event>();;
     protected Surface(Timeline timeline){
         Iterator<Event> eventIterator = timeline.getEventIterator();
         while(eventIterator.hasNext())
             events.add(eventIterator.next());
     }
-    @Override
+ 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         doDrawing(g);
@@ -76,8 +66,8 @@ class Surface extends JPanel{
             end = events.get(0).getStartDate();
         for(Iterator<Event> it = events.iterator();it.hasNext();){
             Event e = it.next();
-            int sDate = e.getStartDate();
-            int eDate = e.getEndDate();
+            Integer sDate = e.getStartDate();
+            Integer eDate = e.getEndDate();
             if(sDate<start)
                 start = sDate;
             if(sDate>end)
@@ -119,7 +109,11 @@ class Surface extends JPanel{
             Integer eStart = e.getStartDate();
             Integer eEnd = e.getEndDate();
             Double begin = convert(eStart.doubleValue(),slope,start.doubleValue());
-            Double finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
+            Double finish;
+            if(eEnd!=null)
+                finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
+            else
+                finish = begin;
             g2d.drawLine(begin.intValue(), h/2, begin.intValue(), h/2-h/8);
             g2d.drawString(e.getTitle(), begin.intValue(), h/2-h/8);
         }

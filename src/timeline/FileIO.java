@@ -1,5 +1,4 @@
 
-
 package timeline;
 
 import java.io.BufferedReader;
@@ -38,11 +37,11 @@ public class FileIO {
                     String[] e = parsed[i].split(":");
                     Event event = new Event(e[0]);
                     //order: title, description, startDate, endDate, category
-                    if(!e[1].equals("")){
+                    if(!e[1].equals("null")){
                         event.setDescription(e[1]);
                     }
                     event.setStartDate(Integer.parseInt(e[2]));
-                    if(!e[3].equals("")){
+                    if(!e[3].equals("null")){
                         event.setEndDate(Integer.parseInt(e[3]));
                     }
                     //Must save cat color info too!!!
@@ -51,6 +50,7 @@ public class FileIO {
                 }
                 timelines.add(timeline);
             }
+            reader.close();
         }catch(Exception ex){
         }
         try{
@@ -65,26 +65,9 @@ public class FileIO {
                 category.setColor(new Color(red,green,blue));
                 categories.add(category);
             }
+            reader.close();
         }catch(Exception ex){}
     }
-    
-    /*
-     * @param name The name of the Timeline to load.
-     * @return The timeLine of that name or a new Timeline with "NoTimeline" as its name.
-     */
-    /*public Timeline load(String name){
-        for(Iterator it = timelines.iterator();it.hasNext();){
-            Timeline timeline = (Timeline)it.next();
-            if(timeline.getTitle().equals(name)){
-                return timeline;
-            }
-        }
-        return new Timeline("NoTimeline");
-    }
-    */
-    /*
-     * @return True if the writing the file was successful, otherwise False.
-     */
     public boolean save(){
         PrintWriter writer;
         try{
@@ -102,27 +85,21 @@ public class FileIO {
                 Event event = (Event)events.next();
                 String name = event.getTitle();
                 Category cat = event.getCategory();
-                writer.print(name+":");
+                
                 String des;
-                try{
-                    des = event.getDescription();
-                    writer.print(des+":");
-                }catch(Exception e){
-                    writer.print(""+":");
-                }
+                des = event.getDescription();
                 int start = event.getStartDate();
                 Integer end;
-                try{
-                    end = event.getEndDate();
-                    writer.print(end+":");
-                }catch(Exception e){
-                    writer.print(""+":");
-                }
+                end = event.getEndDate();
+                writer.print(name+":");
+                writer.print(des+":");
                 writer.print(start+":");
-                writer.print(cat.toString()+";");
+                writer.print(end+":");
+                writer.print(cat.getName()+";");
             }
             writer.println();
         }
+        writer.flush();
         try{
             writer = new PrintWriter(catNames);
         }catch(Exception ex){
@@ -138,6 +115,8 @@ public class FileIO {
             writer.print(category.getColor().getBlue());
             writer.println();
         }
+        writer.flush();
+        writer.close();
         return true;
     }
     /*
@@ -165,18 +144,18 @@ public class FileIO {
         }return false;
     }
     
-    public boolean containsTimeline(String name){
-        for(Timeline t : timelines){
-            if(t.getTitle().equals(name)) return true;
-        }return false;
-    }
-    
     public boolean containsTitle(Category cat){
         for(Category c : categories){
             if(c.getName().equals(cat.getName())) return true;
         }return false;
     }
     
+    public boolean containsTimeline(String name){
+        for(Timeline t : timelines){
+            if(t.getTitle().equals(name)) return true;
+        }return false;
+    }
+
 
     /*
      * @param name The name of the Timeline to be deleted.
@@ -269,5 +248,8 @@ public class FileIO {
     public Category getDefaultCategory(){
         return categories.get(0);
     }
+    
+    
+
     
 }

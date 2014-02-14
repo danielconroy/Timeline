@@ -115,9 +115,7 @@ public class ManageTimelines extends javax.swing.JFrame {
 
         pack();
         
-        //</editor-fold>
-
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     /*
         Sets all the combo box options with all the timelines
