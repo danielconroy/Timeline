@@ -1,13 +1,9 @@
 package timeline;
 
-import java.awt.Component;
 import java.awt.*;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.JComboBox;
 
 public class ManageCategories extends javax.swing.JFrame {
 
@@ -16,9 +12,12 @@ public class ManageCategories extends javax.swing.JFrame {
      */
     private final FileIO fileIO;
     private Category selectedCategory;
+    private final ManageCategories thisManageCategories;
 
     public ManageCategories(FileIO fileIO) {
-        this.fileIO = fileIO;        
+        this.fileIO = fileIO;   
+        openEditCategories = new ArrayList<EditCategory>();
+        thisManageCategories = this;
         initComponents();
     }
 
@@ -30,9 +29,11 @@ public class ManageCategories extends javax.swing.JFrame {
     private JButton editButton;
     private JButton createButton;
     private JButton deleteButton;
+    private JButton refreshButton;    
     private JComboBox jComboBox1;
     private JLabel titleLabel;
     private JTextField nameTextField;
+    private static ArrayList<EditCategory> openEditCategories;
     
     private void initComponents() {
         setResizable(false);
@@ -42,12 +43,13 @@ public class ManageCategories extends javax.swing.JFrame {
         int x = (int) ((d.getWidth() - getWidth()) / 2);
         setLocation(x, y);
         
-        titleLabel = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
-        editButton = new javax.swing.JButton();
-        deleteButton = new javax.swing.JButton();
-        createButton = new javax.swing.JButton();
-        nameTextField = new javax.swing.JTextField();
+        refreshButton = new JButton();
+        titleLabel = new JLabel();
+        jComboBox1 = new JComboBox();
+        editButton = new JButton();
+        deleteButton = new JButton();
+        createButton = new JButton();
+        nameTextField = new JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -71,7 +73,18 @@ public class ManageCategories extends javax.swing.JFrame {
         createButton.addActionListener(new MCListener());
         
         jComboBox1.addActionListener(new ComboBoxListener());
+                
+        refreshButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setComboBox();
+            }
+        });
 
+        ImageIcon icon = createImageIcon("refresh.png",
+                                 "refresh");
+        
+        refreshButton.setIcon(icon);
+        
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -82,6 +95,7 @@ public class ManageCategories extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(refreshButton, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
                         .addComponent(deleteButton, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -106,7 +120,9 @@ public class ManageCategories extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
                     .addComponent(editButton))
-                .addComponent(deleteButton)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(refreshButton, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+                .addComponent(deleteButton))
 )
         );
        
@@ -114,7 +130,7 @@ public class ManageCategories extends javax.swing.JFrame {
     }// </editor-fold>                        
 
 
-    private void setComboBox(){
+    public void setComboBox(){
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
         String[] names = new String[fileIO.catSize()];
         int i = 0;
@@ -126,6 +142,47 @@ public class ManageCategories extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
         selectedCategory = c;
     }
+    
+    /** 
+     * Returns an ImageIcon, or null if the path was invalid. 
+     * Code by http://docs.oracle.com/javase/tutorial/uiswing/components/icon.html.
+     */
+    protected ImageIcon createImageIcon(String path,
+                                               String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+    
+    public void addEditCategory(EditCategory e){
+        openEditCategories.add(e);
+    }
+    
+    public void removeEditCategory(EditCategory e){
+        openEditCategories.remove(e);
+    }
+    
+    /* 
+    * If the category in question is deleted,
+    * events which were previously in that category will be assigned a new category.
+    */
+    private void resetEventCategories(Category wasDeleted){
+        Iterator<Timeline> timelineIterator = fileIO.getTimelineIterator();
+        while(timelineIterator.hasNext()){
+            Timeline t = timelineIterator.next();
+            Iterator<Event> eventIterator = t.getEventIterator();
+            while(eventIterator.hasNext()){
+                Event e = eventIterator.next();
+                if(e.getCategory().getName().equals(wasDeleted.getName())){
+                    e.setCategory(fileIO.getDefaultCategory());
+                }
+            }
+        }
+    }
         
     private class MCListener implements ActionListener{
 
@@ -134,15 +191,29 @@ public class ManageCategories extends javax.swing.JFrame {
 
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
+            
             if(thisButton == editButton){
+               for(EditCategory e : openEditCategories)
+                    if(e.getCategory().getName().equals(selectedCategory.getName()))
+                        return;
                 java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new EditCategory(selectedCategory, fileIO).setVisible(true);
+                    new EditCategory(selectedCategory, fileIO, thisManageCategories).setVisible(true);
                 }
             });
 
            }else if(thisButton == deleteButton){
                if(fileIO.catSize()>1){
+                    for(EditCategory ec : openEditCategories){
+                        if(ec.getCategory().getName().equals(
+                                selectedCategory.getName())){
+                            ec.dispose();
+                            ec.setVisible(false);
+                            removeEditCategory(ec);
+                            break;
+                         }
+                    }
+                   resetEventCategories(selectedCategory);
                    fileIO.deleteCategory(selectedCategory);
                    setComboBox();
                }
@@ -180,7 +251,9 @@ public class ManageCategories extends javax.swing.JFrame {
             }
         }
 
-    }    
+    }
+    
+    
     
     
 }

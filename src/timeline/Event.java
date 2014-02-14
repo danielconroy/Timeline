@@ -10,19 +10,7 @@ class Event{
             this.title = title;
             category = new Category("Default");
         }
-        public Event(String title, String des, int startDate, int endDate, Category category){
-		this.title = title;
-                this.description = des;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.category = category;
-	}
-	public Event(String title, int startDate, int endDate, Category category){
-		this.title = title;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.category = category;
-	}
+        
 	public Event(String title, int startDate, Category category){
 		this.title = title;
 		this.startDate = startDate;
@@ -43,7 +31,7 @@ class Event{
                 return endDate;
 	}
 	public Category getCategory(){
-		return category;
+            return category;
 	}
 
 	//Setter methods

@@ -13,11 +13,16 @@ public class EditCategory extends javax.swing.JFrame {
     private Category category;
     private final FileIO fileIO;
     private final EditEvent editEvent;
+    private final ManageCategories superManage;
+    private final EditCategory thisEditCategory;
     
-    public EditCategory(Category category, FileIO fileIO) {
+    public EditCategory(Category category, FileIO fileIO, ManageCategories superManage) {
         editEvent = null;
         this.fileIO = fileIO;
         this.category = category;
+        thisEditCategory = this;
+        this.superManage = superManage;
+        superManage.addEditCategory(thisEditCategory);
         initComponents();
     }
     
@@ -25,6 +30,8 @@ public class EditCategory extends javax.swing.JFrame {
         this.editEvent = editEvent;
         this.fileIO = fileIO;
         this.category = category;
+        superManage = null;
+        thisEditCategory = this;
         initComponents();
     }
     
@@ -48,6 +55,7 @@ public class EditCategory extends javax.swing.JFrame {
      */
     private void initComponents() {
         setResizable(false);
+        addWindowListener();
         
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         int y = (int) ((d.getHeight() - getHeight()) / 2);        
@@ -65,8 +73,6 @@ public class EditCategory extends javax.swing.JFrame {
         previewButton = new javax.swing.JButton();
         finishedButton = new javax.swing.JButton();
         jTextField5 = new javax.swing.JTextField();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Edit Category");
         
@@ -146,14 +152,27 @@ public class EditCategory extends javax.swing.JFrame {
     }
     
     
-    public void submitTextFields(){
+    public boolean submitTextFields(){
         String name = nameTextField.getText();
+        if(name.equals("<Name>")){ 
+            JOptionPane.showMessageDialog(
+            null, "The category needs a name!", 
+                "FATAL_ERROR", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         category.setName(name);        
-        if(!makeColor()) return;
+        if(!makeColor()) return false;
         Color color = new Color(r, g, b);
         category.setColor(color);
         fileIO.addCategory(category);
         fileIO.save();
+        if(editEvent != null) editEvent.setComboBox();
+        return true;
+    }
+    
+    public Category getCategory(){
+        return category;
     }
     
     //Returns true if successful, false if failed.
@@ -165,22 +184,53 @@ public class EditCategory extends javax.swing.JFrame {
         try{
             r = Integer.parseInt(red);
         }catch(NumberFormatException e){
+           JOptionPane.showMessageDialog(
+            null, "Please remember to use integers for rgb values!", 
+                "FATAL_ERROR", 
+                JOptionPane.ERROR_MESSAGE);
             return false;
         }
         try{
             g = Integer.parseInt(green);
         }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(
+            null, "Please remember to use integers for rgb values!", 
+                "FATAL_ERROR", 
+                JOptionPane.ERROR_MESSAGE);
             return false;
         }        
         try{
             b = Integer.parseInt(blue);
         }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(
+            null, "Please remember to use integers for rgb values!", 
+                "FATAL_ERROR", 
+                JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if(r > 255 || b > 255 || g > 255) return false;
+        if(r > 255 || b > 255 || g > 255){
+            JOptionPane.showMessageDialog(
+            null, "All rgb values must be <= 255!", 
+                "FATAL_ERROR", 
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
         jTextField5.setBackground(new java.awt.Color(r, g, b));
         return true;
     }
+    
+    
+    private void addWindowListener(){
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
+        addWindowListener( new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                superManage.removeEditCategory(thisEditCategory);
+            }
+        });
+    }
+
 
     private class ECListener implements ActionListener{
     
@@ -190,10 +240,16 @@ public class EditCategory extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == finishedButton){
-                submitTextFields();
-                if(editEvent != null) editEvent.setComboBox();
-                setVisible(false);
-                dispose();
+                if(submitTextFields()){
+                    if(editEvent != null) editEvent.setComboBox();
+                    if(superManage != null){
+                        superManage.addEditCategory(thisEditCategory);
+                        superManage.setComboBox();
+                    }
+                    
+                    setVisible(false);
+                    dispose();
+                }
             }else if(thisButton == previewButton){
                 if(makeColor())
                     jTextField5.setBackground(new java.awt.Color(r, g, b));

@@ -49,9 +49,11 @@ public class Display extends JFrame{
 }
 class Surface extends JPanel{
     private Double factor;
-    private ArrayList<Event> events;
+    private ArrayList<Event> events = new ArrayList<Event>();
     protected Surface(Timeline timeline){
-        this.events = timeline.getEvents();
+        Iterator<Event> eventIterator = timeline.getEventIterator();
+        while(eventIterator.hasNext())
+            events.add(eventIterator.next());
     }
     @Override
     public void paintComponent(Graphics g){

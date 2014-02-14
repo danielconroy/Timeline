@@ -13,10 +13,14 @@ public class ManageTimelines extends javax.swing.JFrame {
      * Creates new form ManageTimelines
      */
     private FileIO fileIO;
-    private Timeline selectedTimeline = new Timeline("Base");
+    private Timeline selectedTimeline = null;
+    private static ArrayList<EditTimeline> openEditTimelines;
+    private ManageTimelines thisManageTimelines;
     
     public ManageTimelines(FileIO fileIO) {
+        openEditTimelines = new ArrayList<EditTimeline>();
         this.fileIO = fileIO;
+        thisManageTimelines = this;
         initComponents();
     }
     
@@ -115,88 +119,129 @@ public class ManageTimelines extends javax.swing.JFrame {
 
     }// </editor-fold>//GEN-END:initComponents
 
-/*
-    Sets all the combo box options with all the timelines
-    available and known to the FileIO object.
-    
-    */
-private void setComboBox(){
-    Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
-    String[] names = new String[fileIO.timeSize()+1];
-    int i = 1;
-    names[0] = "All Timelines";
-    Timeline t;
-    while(timelineIterator.hasNext()){
-        t = timelineIterator.next();
-        names[i++] = t.getTitle();
-    }
-    jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
-}
-     
-private class MTListener implements ActionListener{
-    
-    public MTListener(){
-    }
-    
-    public void actionPerformed(ActionEvent ae){
-        JButton thisButton = (JButton) ae.getSource();
-        if(thisButton == manageButton){
-            if(fileIO.timeSize()==0) return;
-            java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditTimeline(selectedTimeline, fileIO).setVisible(true);
-            }
-        });
+    /*
+        Sets all the combo box options with all the timelines
+        available and known to the FileIO object.
 
-       }else if(thisButton == deleteButton){
-           if(!selectedTimeline.getTitle().equals("Base")){
-               fileIO.deleteTimeline(selectedTimeline);
-               setComboBox();
-           }
-           fileIO.save();
-       }else if(thisButton == createButton){
-           String name = nameTextField.getText();
-           if(name.equals("<Name>")) return;
-           Timeline time = new Timeline(name);
-           fileIO.addTimeline(time);
-           setComboBox(); // Reset combo box to display the new timeline.
-           jComboBox1.setSelectedItem(time.getTitle());
-           selectedTimeline = time;
-           java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new EditTimeline(selectedTimeline, fileIO).setVisible(true);
-            }
-        });
-        fileIO.save();
-       }
-    }
-    
-    }
-
-private class ComboBoxListener implements ActionListener{
-    
-    public ComboBoxListener(){
-        
-    }
-    
-    public void actionPerformed(ActionEvent ae){
-        JComboBox thisBox = (JComboBox) ae.getSource();
-        
+        */
+    private void setComboBox(){
         Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
+        String[] names = new String[fileIO.timeSize()+1];
+        int i = 1;
+        names[0] = "All Timelines";
         Timeline t;
         while(timelineIterator.hasNext()){
             t = timelineIterator.next();
-            if(thisBox.getSelectedItem().equals(t.getTitle())){
-                selectedTimeline = t;
-                break;
-            }            
+            names[i++] = t.getTitle();
         }
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
     }
     
-}
+    private void deleteTimeline(){
+        for(EditTimeline et : openEditTimelines){
+                if(et.getTimeline().getTitle().equals(selectedTimeline.getTitle())){
+                    for(EditEvent ee : et.getEditEvents()){
+                        ee.dispose();
+                        ee.setVisible(false);
+                        }  
+                    et.dispose();
+                    et.setVisible(false);
+                    removeEditTimeline(et);
+                    break;
+                    }
+        }
+
+        fileIO.deleteTimeline(selectedTimeline);
+        setComboBox();
+        fileIO.save();
+    }
+        
+    public void addEditTimeline(EditTimeline e){
+        openEditTimelines.add(e);
+    }
+    
+    public void removeEditTimeline(EditTimeline e){
+        openEditTimelines.remove(e);
+    }
+
+    private class MTListener implements ActionListener{
+
+        public MTListener(){
+        }
+
+        public void actionPerformed(ActionEvent ae){
+            JButton thisButton = (JButton) ae.getSource();
+            if(thisButton == manageButton){
+                if(fileIO.timeSize()==0) return;
+                for(EditTimeline e : openEditTimelines)
+                    if(e.getTimeline().getTitle().equals(selectedTimeline.getTitle()))
+                        return;
+
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new EditTimeline(selectedTimeline, fileIO, thisManageTimelines).setVisible(true);
+                }
+            });
+
+           }else if(thisButton == deleteButton){
+               if(selectedTimeline != null){
+                    int result = JOptionPane.showConfirmDialog(
+                     thisManageTimelines,
+                     "Are you sure you want to delete this timeline?",
+                     "Delete",
+                      JOptionPane.YES_NO_OPTION);
+
+                    if (result == JOptionPane.YES_OPTION)
+                        deleteTimeline();
+               }
+           }else if(thisButton == createButton){
+               for(EditTimeline e : openEditTimelines)
+                    if(e.getTimeline().getTitle().equals(selectedTimeline.getTitle()))
+                        return;
+               String name = nameTextField.getText();
+               if(name.equals("<Name>")) return;
+               if(fileIO.containsTimeline(name)) return;
+               Timeline time = new Timeline(name);
+               fileIO.addTimeline(time);
+               setComboBox(); // Reset combo box to display the new timeline.
+               jComboBox1.setSelectedItem(time.getTitle());
+               selectedTimeline = time;
+               java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    new EditTimeline(selectedTimeline, fileIO, thisManageTimelines).setVisible(true);
+                }
+            });
+            fileIO.save();
+           }
+        }
+    
+    }
+
+    private class ComboBoxListener implements ActionListener{
+
+        public ComboBoxListener(){
+
+        }
+
+        public void actionPerformed(ActionEvent ae){
+            JComboBox thisBox = (JComboBox) ae.getSource();
+
+            Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
+            Timeline t;
+            while(timelineIterator.hasNext()){
+                t = timelineIterator.next();
+                if(thisBox.getSelectedItem().equals(t.getTitle())){
+                    selectedTimeline = t;
+                    break;
+                }            
+            }
+        }
+
+    }
 
 
 }
+
     
 
 

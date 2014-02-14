@@ -21,7 +21,6 @@ public class FileIO {
      * Constructor
      */
     public FileIO(){
-        System.out.println("TRYING TO READ");
         this.timelines = new ArrayList<Timeline>();
         this.categories = new ArrayList<Category>();
         timeLineNames = "TimeLineSave.txt";
@@ -29,7 +28,6 @@ public class FileIO {
         BufferedReader reader;
         String raw;
         try{
-            System.out.println("MAKIN THE READER");
             reader = new BufferedReader(new FileReader(timeLineNames));
             while(reader.ready()){
                 raw = reader.readLine();
@@ -88,7 +86,6 @@ public class FileIO {
      * @return True if the writing the file was successful, otherwise False.
      */
     public boolean save(){
-        System.out.println("SAVED");
         PrintWriter writer;
         try{
             writer = new PrintWriter(timeLineNames);
@@ -101,7 +98,7 @@ public class FileIO {
         for(Iterator tLines = timelines.iterator();tLines.hasNext();){
             Timeline timeline = (Timeline)tLines.next();
             writer.print(timeline.getTitle()+";");
-            for(Iterator events = timeline.getEvents().iterator();events.hasNext();){
+            for(Iterator events = timeline.getEventIterator();events.hasNext();){
                 Event event = (Event)events.next();
                 String name = event.getTitle();
                 Category cat = event.getCategory();
@@ -168,11 +165,18 @@ public class FileIO {
         }return false;
     }
     
+    public boolean containsTimeline(String name){
+        for(Timeline t : timelines){
+            if(t.getTitle().equals(name)) return true;
+        }return false;
+    }
+    
     public boolean containsTitle(Category cat){
         for(Category c : categories){
             if(c.getName().equals(cat.getName())) return true;
         }return false;
     }
+    
 
     /*
      * @param name The name of the Timeline to be deleted.
@@ -260,6 +264,10 @@ public class FileIO {
     
     public int timeSize(){
         return timelines.size();
+    }
+    
+    public Category getDefaultCategory(){
+        return categories.get(0);
     }
     
 }

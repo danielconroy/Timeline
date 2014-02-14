@@ -25,17 +25,20 @@ public class EditEvent extends javax.swing.JFrame {
         this.timeline = timeline;
         this.superTimeline =superTimeline;
         thisEditEvent = this;
+        superTimeline.addEditEvent(thisEditEvent);
         initComponents();
     }
 
     private final FileIO fileIO;
     private JButton finishedButton;
+    private JButton refreshButton;
     private JComboBox jComboBox1;
     private JLabel titleLabel;
     private JTextField nameTextField;
     private JTextArea descriptionTextArea;
     private JTextField startTextField;
     private JTextField endTextField;
+    private JScrollPane scroll;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,6 +48,8 @@ public class EditEvent extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        addWindowListener();
+        
         setResizable(false);
         
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -55,17 +60,21 @@ public class EditEvent extends javax.swing.JFrame {
         titleLabel = new JLabel();
         nameTextField = new JTextField();
         descriptionTextArea = new JTextArea();
-        descriptionTextArea.setPreferredSize( new Dimension( 100, 136 ) );
         descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setWrapStyleWord(true);
-
+        descriptionTextArea.setBounds(10, 10, 136, 200);       
+        scroll = new JScrollPane();
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroll.add(descriptionTextArea);
+        scroll.setViewportView(descriptionTextArea);
+        //scroll.setSize(136, 200);
         
         startTextField = new JTextField();
         endTextField = new JTextField();
         jComboBox1 = new JComboBox();
         finishedButton = new JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        refreshButton = new JButton();
         
         try{
             titleLabel.setFont(new Font("Vijaya", 0, 42));
@@ -81,6 +90,18 @@ public class EditEvent extends javax.swing.JFrame {
 
         finishedButton.setText("Finished");
         finishedButton.addActionListener(new EEListener());
+        
+        refreshButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setComboBox();
+            }
+        });
+
+        ImageIcon icon = createImageIcon("refresh.png",
+                                 "refresh");
+        
+        refreshButton.setIcon(icon);
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,14 +119,16 @@ public class EditEvent extends javax.swing.JFrame {
                     .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(finishedButton, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(descriptionTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(refreshButton, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scroll)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(titleLabel)    
-                .addComponent(descriptionTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)    
+                .addComponent(scroll)    
                 )
+            .addComponent(refreshButton, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(titleLabel)     
                 .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -117,7 +140,7 @@ public class EditEvent extends javax.swing.JFrame {
             );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
     public void fillTextFields(){
         if(event.getTitle()!=null)
@@ -158,19 +181,24 @@ public class EditEvent extends javax.swing.JFrame {
     public boolean submitTextFields(){
         String name = nameTextField.getText();
         String description = descriptionTextArea.getText();
-        System.out.println(descriptionTextArea.getText());
         String startDate = startTextField.getText();
         String endDate = endTextField.getText();
         Integer start, end;
         //Name and startDate are essential descriptors. The others are optional.
         if(name.equals("<Name>") || startDate.equals("<Start>")){
-            //Note: inform user they're wrong first.
+            JOptionPane.showMessageDialog(
+                    null, "You must fill out the event name and start date!", 
+                    "FATAL_ERROR", 
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
         try{
             start = Integer.parseInt(startDate);
         }catch(NumberFormatException e){
-            System.out.println("Invalid start date!");
+            JOptionPane.showMessageDialog(
+                    null, "The start date has to be an integer!", 
+                    "FATAL_ERROR", 
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
         
@@ -185,13 +213,54 @@ public class EditEvent extends javax.swing.JFrame {
             try{
                 end = Integer.parseInt(endDate);
             }catch(NumberFormatException e){
-                System.out.println("Invalid end date!");
+                JOptionPane.showMessageDialog(
+                    null, "The end date must be an integer!", 
+                    "FATAL_ERROR", 
+                    JOptionPane.ERROR_MESSAGE);
                 return false;
             } 
             //The end date can't happen before the starting date!
-            if(end >= start) event.setEndDate(end);
+            if(end >= start){
+                event.setEndDate(end);
+            }else{
+                JOptionPane.showMessageDialog(
+                    null, "The end date must be later than the start date!", 
+                    "JUST_TO_LET_YOU_KNOW", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
         }
         return true;
+    }
+    
+        /** 
+     * Returns an ImageIcon, or null if the path was invalid. 
+     * Code by http://docs.oracle.com/javase/tutorial/uiswing/components/icon.html.
+     */
+    protected ImageIcon createImageIcon(String path,
+                                               String description) {
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+            return new ImageIcon(imgURL, description);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+            return null;
+        }
+    }
+
+    
+    private void addWindowListener(){
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
+        addWindowListener( new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                superTimeline.removeEditEvent(thisEditEvent);
+            }
+        });
+    }
+    
+    public Event getEvent(){
+        return event;
     }
 
     private class EEListener implements ActionListener{
@@ -205,10 +274,13 @@ public class EditEvent extends javax.swing.JFrame {
                 if(submitTextFields()){
                     timeline.addEvent(event);
                     superTimeline.setComboBox();   
+                    superTimeline.setSelectedItem(event);
                     fileIO.save();
+                    superTimeline.removeEditEvent(thisEditEvent);
+                    setVisible(false);
+                    dispose();
                 }
-                setVisible(false);
-                dispose();
+
             }
         }
     
@@ -226,11 +298,9 @@ public class EditEvent extends javax.swing.JFrame {
         if(thisBox.getSelectedItem().equals("New Category")){
               java.awt.EventQueue.invokeLater(new Runnable() {
                    public void run() {
-                        new EditCategory(selectedCategory, fileIO, thisEditEvent).setVisible(true);
+                        new EditCategory(new Category("<New>"), fileIO, thisEditEvent).setVisible(true);
                    }
                });
-               
-               setComboBox(); // Reset combo box to display the new timeline.
                return;
         }
         
