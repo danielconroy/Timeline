@@ -74,8 +74,8 @@ class Surface extends JPanel{
             end = events.get(0).getStartDate();
         for(Iterator<Event> it = events.iterator();it.hasNext();){
             Event e = it.next();
-            int sDate = e.getStartDate();
-            int eDate = e.getEndDate();
+            Integer sDate = e.getStartDate();
+            Integer eDate = e.getEndDate();
             if(sDate<start)
                 start = sDate;
             if(sDate>end)
@@ -117,7 +117,11 @@ class Surface extends JPanel{
             Integer eStart = e.getStartDate();
             Integer eEnd = e.getEndDate();
             Double begin = convert(eStart.doubleValue(),slope,start.doubleValue());
-            Double finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
+            Double finish;
+            if(eEnd!=null)
+                finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
+            else
+                finish = begin;
             g2d.drawLine(begin.intValue(), h/2, begin.intValue(), h/2-h/8);
             g2d.drawString(e.getTitle(), begin.intValue(), h/2-h/8);
         }
