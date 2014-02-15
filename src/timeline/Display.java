@@ -9,7 +9,8 @@ import java.awt.Insets;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -120,7 +121,7 @@ class Surface extends JPanel{
     }
     private void drawLines(Integer start, Double increase, Double slope,
             Integer h, Graphics2D g2d){
-        for(int i = -20; i<20; i++){
+        for(int i = -100; i<100; i++){
             Double current = start.doubleValue();
             Integer temp = current.intValue();
             current = temp.doubleValue();
@@ -130,9 +131,9 @@ class Surface extends JPanel{
             Double convert = convert(current,slope,start.doubleValue());
             int x = convert.intValue();
             Integer y = h/2+h/32;
-            g2d.drawLine(x,y,x,h/2);
+            g2d.drawLine(x+horizontalShift,y,x+horizontalShift,h/2);
             DecimalFormat df = new DecimalFormat("#.0");
-            g2d.drawString(""+df.format(current), x, h/2);
+            g2d.drawString(""+df.format(current), x+horizontalShift, h/2);
         }
     }
     private void drawEvents(Integer start, Double slope, Integer h,
@@ -147,9 +148,10 @@ class Surface extends JPanel{
                 finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
             else
                 finish = begin;
-            g2d.drawLine(begin.intValue(), h/2, begin.intValue(), h/2-h/8);
+            g2d.drawLine(begin.intValue()+horizontalShift, h/2, 
+                    begin.intValue()+horizontalShift, h/2-h/8);
             JLabel label = new JLabel(e.getTitle());
-            label.setLocation(begin.intValue(), h/2-h/8-10);
+            label.setLocation(begin.intValue()+horizontalShift, h/2-h/8-10);
             label.setSize(50,10);
             surface.add(label);
         }
@@ -172,10 +174,53 @@ class Surface extends JPanel{
         left.setSize(100,20);
         surface.add(left);
         
-        addActionListeners(right,zIn,zOut,left);
+        addActionListeners(right,zIn,zOut,left,surface);
     }
     private void addActionListeners(JButton right,JButton zIn,JButton zOut,
-            JButton left){
-        
+            JButton left, final Surface surface){
+        right.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                new Thread(new Runnable(){
+                    public void run(){
+                        surface.horizontalShift-=100;
+                        System.out.println(surface.horizontalShift);
+                        surface.repaint();
+                    }
+                }).start();
+            }
+        });
+        left.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                new Thread(new Runnable(){
+                    public void run(){
+                        surface.horizontalShift+=100;
+                        System.out.println(surface.horizontalShift);
+                        surface.repaint();
+                    }
+                }).start();
+            }
+        });
+        zIn.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                new Thread(new Runnable(){
+                    public void run(){
+                        surface.zoom+=50;
+                        System.out.println(surface.zoom);
+                        surface.repaint();
+                    }
+                }).start();
+            }
+        });
+        zOut.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                new Thread(new Runnable(){
+                    public void run(){
+                        surface.zoom-=50;
+                        System.out.println(surface.zoom);
+                        surface.repaint();
+                    }
+                }).start();
+            }
+        });
     }
 }
