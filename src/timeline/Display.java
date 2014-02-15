@@ -62,6 +62,8 @@ public class Display extends JFrame{
                 e1.setDescription("test description.");
                 tl.addEvent(e1);
                 tl.addEvent(new Event("second",200,person));
+                tl.addEvent(e1);
+                tl.addEvent(new Event("second",7,person));
                 Display display = new Display(tl);
                 display.setVisible(true);
             }

@@ -281,7 +281,7 @@ public class EditEvent extends javax.swing.JFrame {
         }
     }
     /**
-     * Adds the window functionality.
+     * Informs the timeline that opened this that the EditEvent window has closed.
      */
     private void addWindowListener(){
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
