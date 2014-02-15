@@ -218,33 +218,33 @@ public class ManageTimelines extends javax.swing.JFrame {
                     if (result == JOptionPane.YES_OPTION)
                         deleteTimeline();
                }
-           }else if(thisButton == createButton){
-               String name = nameTextField.getText().trim();
-               if(name.length() < 1){
+            }else if(thisButton == createButton){
+                String name = nameTextField.getText().trim();
+                if(name.length() < 1){
                     JOptionPane.showMessageDialog(
                              null, "Name must be at least 1 character long!", 
                              "FATAL_ERROR", 
                              JOptionPane.ERROR_MESSAGE);
                     return;
-               }
+                }
 
-               for(EditTimeline e : openEditTimelines)
+                for(EditTimeline e : openEditTimelines)
                     if(e.getTimeline().getTitle().equals(name))
                         return;
-               if(name.equals("<Name>")) return;
-               if(fileIO.containsTimeline(name)) return;
-               Timeline time = new Timeline(name);
-               fileIO.addTimeline(time);
-               setComboBox(); // Reset combo box to display the new timeline.
-               jComboBox1.setSelectedItem(time.getTitle());
-               selectedTimeline = time;
-               java.awt.EventQueue.invokeLater(new Runnable() {
+                if(name.equals("<Name>")) return;
+                if(fileIO.containsTimeline(name)) return;
+                Timeline time = new Timeline(name);
+                fileIO.addTimeline(time);
+                setComboBox(); // Reset combo box to display the new timeline.
+                jComboBox1.setSelectedItem(time.getTitle());
+                selectedTimeline = time;
+                java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     new EditTimeline(selectedTimeline, fileIO, thisManageTimelines).setVisible(true);
                 }
             });
             fileIO.save();
-           }
+            }
         }
     }
     /**
