@@ -55,7 +55,7 @@ class Surface extends JPanel{
     private Double factor;
     private ArrayList<Event> events = new ArrayList<Event>();
     private Integer horizontalShift = 0;
-    private Integer zoom = 0;
+    private Double zoom = 1.0;
     protected Surface(Timeline timeline){
         setLayout(null);
         Iterator<Event> eventIterator = timeline.getEventIterator();
@@ -117,7 +117,7 @@ class Surface extends JPanel{
         addButtons(this,w,h);
     }
     private Double convert(Double x, Double slope, Double start){
-        return slope*x-start*slope;
+        return slope*x*zoom-start*slope+zoom;
     }
     private void drawLines(Integer start, Double increase, Double slope,
             Integer h, Graphics2D g2d){
@@ -126,7 +126,7 @@ class Surface extends JPanel{
             Integer temp = current.intValue();
             current = temp.doubleValue();
             temp = increase.intValue();
-            Double increase2 = temp.doubleValue();
+            Double increase2 = temp.doubleValue()/zoom;
             current = current + increase2*i;
             Double convert = convert(current,slope,start.doubleValue());
             int x = convert.intValue();
@@ -204,7 +204,7 @@ class Surface extends JPanel{
             public void actionPerformed(ActionEvent e){
                 new Thread(new Runnable(){
                     public void run(){
-                        surface.zoom+=50;
+                        zoom = zoom*2;
                         System.out.println(surface.zoom);
                         surface.repaint();
                     }
@@ -215,7 +215,7 @@ class Surface extends JPanel{
             public void actionPerformed(ActionEvent e){
                 new Thread(new Runnable(){
                     public void run(){
-                        surface.zoom-=50;
+                        zoom = zoom/2;
                         System.out.println(surface.zoom);
                         surface.repaint();
                     }
