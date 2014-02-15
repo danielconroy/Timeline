@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.text.DecimalFormat;
 import javax.swing.JLabel;
+import javax.swing.JButton;
 
 /**
  *
@@ -52,6 +53,8 @@ public class Display extends JFrame{
 class Surface extends JPanel{
     private Double factor;
     private ArrayList<Event> events = new ArrayList<Event>();
+    private Integer horizontalShift = 0;
+    private Integer zoom = 0;
     protected Surface(Timeline timeline){
         setLayout(null);
         Iterator<Event> eventIterator = timeline.getEventIterator();
@@ -64,6 +67,7 @@ class Surface extends JPanel{
         doDrawing(g);
     }
     private void doDrawing(Graphics g){
+        removeAll();
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.DARK_GRAY);
         Dimension size = getSize();
@@ -109,6 +113,7 @@ class Surface extends JPanel{
         Double increase = range.doubleValue()/10;
         drawLines(start,increase,slope,h,g2d);
         drawEvents(start,slope,h,g2d,this);
+        addButtons(this,w,h);
     }
     private Double convert(Double x, Double slope, Double start){
         return slope*x-start*slope;
@@ -148,5 +153,29 @@ class Surface extends JPanel{
             label.setSize(50,10);
             surface.add(label);
         }
+    }
+    private void addButtons(Surface surface, Integer w, Integer h){
+        JButton right = new JButton("Shift Right");
+        right.setLocation(w/2+100,h-20);
+        right.setSize(100,20);
+        surface.add(right);
+        JButton zIn = new JButton("Zoom In");
+        zIn.setLocation(w/2,h-20);
+        zIn.setSize(100,20);
+        surface.add(zIn);
+        JButton zOut = new JButton("Zoom Out");
+        zOut.setLocation(w/2-100,h-20);
+        zOut.setSize(100,20);
+        surface.add(zOut);
+        JButton left = new JButton("Shift Left");
+        left.setLocation(w/2-200,h-20);
+        left.setSize(100,20);
+        surface.add(left);
+        
+        addActionListeners(right,zIn,zOut,left);
+    }
+    private void addActionListeners(JButton right,JButton zIn,JButton zOut,
+            JButton left){
+        
     }
 }
