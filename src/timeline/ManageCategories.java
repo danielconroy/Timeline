@@ -215,6 +215,7 @@ public class ManageCategories extends javax.swing.JFrame {
                     }
                    resetEventCategories(selectedCategory);
                    fileIO.deleteCategory(selectedCategory);
+                   fileIO.save();
                    setComboBox();
                }
 
