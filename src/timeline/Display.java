@@ -57,10 +57,12 @@ public class Display extends JFrame{
             public void run() {
                 Timeline tl = new Timeline("test");
                 Category person = new Category("Person",Color.CYAN);
-                Event e1 = new Event("first",100,person);
-                e1.setEndDate(120);
-                //tl.addEvent(e1);
-                tl.addEvent(new Event("second",200,person));
+                Event e1 = new Event("first",-6,person);
+                e1.setEndDate(6);
+                
+                //e1.setEndDate(120);
+                tl.addEvent(e1);
+                tl.addEvent(new Event("second",7,person));
                 Display display = new Display(tl);
                 display.setVisible(true);
             }
