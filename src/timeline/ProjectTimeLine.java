@@ -9,6 +9,9 @@ import javax.swing.*;
 public class ProjectTimeLine {
 
     /**
+     * The main method to start the ProjectTimeLine by generating an
+     * OpenScreen window.
+     * 
      * @param args the command line arguments
      */
     public static void main(String[] args) {

@@ -16,16 +16,26 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.text.DecimalFormat;
 
-/**
+/** The Display Class takes timelines and graphically displays them in a new window.
  *
  * @author Daniel
+ * @author Kayley
  */
 public class Display extends JFrame{
+    /** timeline stores the current timeline being displayed. */
     private static Timeline timeline;
+    /**
+     * Constructor
+     * 
+     * @param timeline Timeline to be displayed.
+     */
     public Display(Timeline timeline){
         this.timeline = timeline;
         initUI();
     }
+    /**
+     * Creates a new Surface and sets window size and close operations.
+     */
     private void initUI(){
         setTitle(timeline.getTitle());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -33,6 +43,11 @@ public class Display extends JFrame{
         add(new Surface(timeline));
         setLocationRelativeTo(null);
     }
+    /**
+     * Main Class for purposes of testing.
+     * 
+     * @param args 
+     */
     public static void main(String[] args){
         SwingUtilities.invokeLater(new Runnable(){
             @Override
@@ -49,6 +64,12 @@ public class Display extends JFrame{
         });
     }
 }
+/** The Surface Class extend JPanel to be the field of vision of the current
+ * graphics.
+ * 
+ * @author Daniel
+ * @author Kayley
+ */
 class Surface extends JPanel{
     private Double factor;
     private ArrayList<Event> events = new ArrayList<Event>();
@@ -56,18 +77,34 @@ class Surface extends JPanel{
     private Double zoom = 1.0;
     private Integer width;
     private JLabel descriptionLabel;
-
+    
+    /**
+     * Constructor
+     * 
+     * @param timeline Timeline to be displayed.
+     */
     protected Surface(Timeline timeline){
         setLayout(null);
         Iterator<Event> eventIterator = timeline.getEventIterator();
         while(eventIterator.hasNext())
             events.add(eventIterator.next());
     }
+    /**
+     * Method called when the parent JFrame needs to be repainted.
+     * 
+     * @param g The Graphics of the parent.
+     */
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         doDrawing(g);
     }
+    /**
+     * Does the legwork of repainting Surface, generating central line, marks,
+     * and populating events and buttons.
+     * 
+     * @param g The Graphics of the parent.
+     */
     private void doDrawing(Graphics g){
         removeAll();
         Graphics2D g2d = (Graphics2D) g;
@@ -78,6 +115,7 @@ class Surface extends JPanel{
         
         Integer start, end;
         
+        //Setting start and end.
         if(events.isEmpty()){
             start = 1;
             end = 1;
@@ -118,9 +156,26 @@ class Surface extends JPanel{
         drawEvents(start,slope,h,g2d,this);
         addButtons(this,w,h);
     }
+    /**
+     * Maps x to the location of the pixel to display.
+     * 
+     * @param x The input value
+     * @param slope The "slope" coefficient for display.
+     * @param start The "intercept" for display.
+     * @return The converted value.
+     */
     private Double convert(Double x, Double slope, Double start){
-        return (slope*x-start*slope)*zoom;
+        return (x-start)*slope*zoom;
     }
+    /**
+     * Draws the horizontal line and all measurement markings and numbers.
+     * 
+     * @param start Starting point to display.
+     * @param increase Distance between marks.
+     * @param slope "slope" coefficient for mapping purposes.
+     * @param h Max height to display.
+     * @param g2d Graphics on which to act.
+     */
     private void drawLines(Integer start, Double increase, Double slope,
             Integer h, Graphics2D g2d){
         for(int i = -100; i<100; i++){
@@ -140,6 +195,15 @@ class Surface extends JPanel{
                     , h/2);
         }
     }
+    /**
+     * Graphs the Events and corresponding demarcated lines.
+     * 
+     * @param start Starting point to display.
+     * @param slope "slope" coefficient for mapping purposes.
+     * @param h Max height to display.
+     * @param g2d Graphics on which to act.
+     * @param surface Parent Surface on which to paint.
+     */
     private void drawEvents(Integer start, Double slope, Integer h,
             Graphics2D g2d, Surface surface){
         Integer height = surface.getHeight()/4;
@@ -164,7 +228,7 @@ class Surface extends JPanel{
             g2d.drawLine(begin.intValue()+horizontalShift.intValue(), h/2, 
                     begin.intValue()+horizontalShift.intValue(), h/2-h/8+vertShift);
             JLabel label = new JLabel(e.getTitle());
-            if(e.getDescription()!=null){
+            /*if(e.getDescription()!=null){
                 descriptionLabel = new JLabel();
                 final String name = e.getDescription();
                //descriptionLabel.setVisible(false);
@@ -190,6 +254,7 @@ class Surface extends JPanel{
                 surface.add(descriptionLabel);
                 
             }
+            */
             label.setLocation(begin.intValue()+horizontalShift.intValue(),
                     h/2-h/8-10+vertShift);
             label.setSize(50,10);
@@ -197,6 +262,13 @@ class Surface extends JPanel{
             surface.add(label);
         }
     }
+    /**
+     * Paints buttons to the screen.
+     * 
+     * @param surface The parent surface on which to paint.
+     * @param w The width of the paint area.
+     * @param h The height of the paint area.
+     */
     private void addButtons(Surface surface, Integer w, Integer h){
         JButton right = new JButton("Shift Right");
         right.setLocation(w/2+100,h-20);
@@ -217,7 +289,15 @@ class Surface extends JPanel{
         
         addActionListeners(right,zIn,zOut,left,surface);
     }
-    
+    /**
+     * Adds ActionListeners to the buttons.
+     * 
+     * @param right The button to shift the viewer right.
+     * @param zIn The button to zoom in.
+     * @param zOut The button to zoom out.
+     * @param left The button to shift the viewer left.
+     * @param surface The parent Surface on which to paint.
+     */
     private void addActionListeners(JButton right,JButton zIn,JButton zOut,
             JButton left, final Surface surface){
         right.addActionListener(new ActionListener(){
