@@ -5,6 +5,12 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+/**
+ * A JFrame by which to edit Categories.
+ * 
+ * @author Daniel
+ * @author Kayley
+ */
 public class EditCategory extends javax.swing.JFrame {
 
     /**
@@ -15,7 +21,13 @@ public class EditCategory extends javax.swing.JFrame {
     private final EditEvent editEvent;
     private final ManageCategories superManage;
     private final EditCategory thisEditCategory;
-    
+    /**
+     * Constructor
+     * 
+     * @param category The category to edit.
+     * @param fileIO The fileIO by which to save.
+     * @param superManage The parent window.
+     */
     public EditCategory(Category category, FileIO fileIO, ManageCategories superManage) {
         editEvent = null;
         this.fileIO = fileIO;
@@ -25,7 +37,13 @@ public class EditCategory extends javax.swing.JFrame {
         superManage.addEditCategory(thisEditCategory);
         initComponents();
     }
-    
+    /**
+     * Constructor
+     * 
+     * @param category The category to edit.
+     * @param fileIO The fileIO by which to save.
+     * @param editEvent The parent window.
+     */
     public EditCategory(Category category, FileIO fileIO, EditEvent editEvent) {
         this.editEvent = editEvent;
         this.fileIO = fileIO;
@@ -146,7 +164,9 @@ public class EditCategory extends javax.swing.JFrame {
 
         pack();
     }
-    
+    /**
+     * Fills the text fields.
+     */
     public void fillTextFields(){
         if(category.getName()!=null)
             nameTextField.setText(category.getName());
@@ -156,8 +176,11 @@ public class EditCategory extends javax.swing.JFrame {
         greenTextField.setText(""+category.getColor().getGreen());
         blueTextField.setText(""+category.getColor().getBlue());
     }
-    
-    
+    /**
+     * Submits the text fields for saving.
+     * 
+     * @return returns true of successful, else false.
+     */
     public boolean submitTextFields(){
         String name = nameTextField.getText();
         if(name.equals("<Name>")){ 
@@ -176,12 +199,19 @@ public class EditCategory extends javax.swing.JFrame {
         if(editEvent != null) editEvent.setComboBox();
         return true;
     }
-    
+    /**
+     * Returns the category being edited.
+     * 
+     * @return The category being edited.
+     */
     public Category getCategory(){
         return category;
     }
-    
-    //Returns true if successful, false if failed.
+    /**
+     * Previews the color selected.
+     * 
+     * @return true if successful, else false.
+     */
     public boolean makeColor(){
         String red = redTextField.getText();
         String green = greenTextField.getText();
@@ -224,8 +254,9 @@ public class EditCategory extends javax.swing.JFrame {
         jTextField5.setBackground(new java.awt.Color(r, g, b));
         return true;
     }
-    
-    
+    /**
+     * Adds the window functionality.
+     */
     private void addWindowListener(){
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
         addWindowListener( new WindowAdapter()
@@ -236,13 +267,20 @@ public class EditCategory extends javax.swing.JFrame {
             }
         });
     }
-
-
+    /**
+     * The action listener by which to finish.
+     */
     private class ECListener implements ActionListener{
-    
+        /**
+         * Constructor
+         */
         public ECListener(){
         }
-    
+        /**
+         * Implements the actionPerformed method to complete the edit.
+         * 
+         * @param ae 
+         */
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == finishedButton){
@@ -261,11 +299,8 @@ public class EditCategory extends javax.swing.JFrame {
                     jTextField5.setBackground(new java.awt.Color(r, g, b));
             }
         }
-    
     }
-    
-    
-    }    
+}    
     
     
   
