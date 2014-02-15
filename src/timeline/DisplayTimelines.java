@@ -7,13 +7,19 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+/**
+ * A JFrame by which to select which timeline to display.
+ * 
+ * @author Daniel
+ */
 public class DisplayTimelines extends javax.swing.JFrame {
-    /**
-     * Creates new form DisplayTimelines
-     */
     private final FileIO fileIO;
     private Timeline selectedTimeline;
-    
+    /**
+     * Constructor
+     * 
+     * @param fileIO The FileIO by which to save.
+     */
     public DisplayTimelines(FileIO fileIO) {
         this.fileIO = fileIO;       
         initComponents();
@@ -83,7 +89,9 @@ public class DisplayTimelines extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>                        
-
+    /**
+     * Sets the ComboBox.
+     */
     private void setComboBox(){
         Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
         String[] names = new String[fileIO.timeSize()+1];
@@ -96,12 +104,19 @@ public class DisplayTimelines extends javax.swing.JFrame {
         }
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
     }
-
+    /**
+     * A class to listen for a selection to display.
+     */
     private class DTListener implements ActionListener{
-    
-        public DTListener(){
-        }
-
+        /**
+         * Constructor
+         */
+        public DTListener(){}
+        /**
+         * Implements the actionPerformed to display the timeline.
+         * 
+         * @param ae The actionEvent received.
+         */
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(selectedTimeline == null) return;
@@ -110,17 +125,21 @@ public class DisplayTimelines extends javax.swing.JFrame {
                     new Display(selectedTimeline).setVisible(true);
                 }
             });
-            
         }
-    
     }
-    
+    /**
+     * A class to listen for a selection of a timeline.
+     */
     private class ComboBoxListener implements ActionListener{
-
-        public ComboBoxListener(){
-
-        }
-
+        /**
+         * Constructor
+         */
+        public ComboBoxListener(){}
+        /**
+         * Implements the actionPerformed method to select a timeline.
+         * 
+         * @param ae The ActionEvent received.
+         */
         public void actionPerformed(ActionEvent ae){
             JComboBox thisBox = (JComboBox) ae.getSource();
 
@@ -133,8 +152,6 @@ public class DisplayTimelines extends javax.swing.JFrame {
                     break;
                 }            
             }
-
-     }    
-
+        }    
     }
 }
