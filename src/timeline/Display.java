@@ -31,6 +31,9 @@ public class Display extends JFrame{
      */
     public Display(Timeline timeline){
         this.timeline = timeline;
+        if(timeline.eventSize()<0){
+            this.dispose();
+        }
         initUI();
     }
     /**
@@ -56,7 +59,7 @@ public class Display extends JFrame{
                 Category person = new Category("Person",Color.CYAN);
                 Event e1 = new Event("first",100,person);
                 e1.setEndDate(120);
-                tl.addEvent(e1);
+                //tl.addEvent(e1);
                 tl.addEvent(new Event("second",200,person));
                 Display display = new Display(tl);
                 display.setVisible(true);
@@ -135,6 +138,8 @@ class Surface extends JPanel{
                     start = eDate;
                 if(eDate>end)
                     end = eDate;
+            }else{
+                end=start*2;
             }
         }
         

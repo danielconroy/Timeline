@@ -7,10 +7,16 @@ package timeline;
 import java.util.*;
 
 /**
- *
+ * Class by which to test the FileIO class.
+ * 
  * @author Daniel
  */
 public class FileIOTest {
+    /**
+     * Main method by which to test the FileIO.
+     * 
+     * @param args 
+     */
     public static void main(String[] args) {
         FileIO io = new FileIO();
         Iterator<Category> itC = io.getCategoryIterator();
