@@ -175,6 +175,7 @@ public class ManageTimelines extends javax.swing.JFrame {
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == manageButton){
                 if(fileIO.timeSize()==0) return;
+                if(selectedTimeline == null) return;
                 for(EditTimeline e : openEditTimelines)
                     if(e.getTimeline().getTitle().equals(selectedTimeline.getTitle()))
                         return;
