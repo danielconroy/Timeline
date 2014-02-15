@@ -65,7 +65,7 @@ public class EditTimeline extends javax.swing.JFrame {
         deleteButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
         nameTextField = new javax.swing.JTextField();
-
+        nameTextField.setDocument(new JTextFieldLimit(12));
 
         setComboBox();
         jComboBox1.addActionListener(new ComboBoxListener());

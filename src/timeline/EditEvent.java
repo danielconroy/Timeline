@@ -76,13 +76,12 @@ public class EditEvent extends javax.swing.JFrame {
         descriptionTextArea = new JTextArea();
         descriptionTextArea.setLineWrap(true);
         descriptionTextArea.setWrapStyleWord(true);
-        descriptionTextArea.setBounds(10, 10, 136, 200);       
+        descriptionTextArea.setBounds(10, 10, 136, 200);      
         scroll = new JScrollPane();
         scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.add(descriptionTextArea);
         scroll.setViewportView(descriptionTextArea);
-        //scroll.setSize(136, 200);
         
         startTextField = new JTextField();
         endTextField = new JTextField();
@@ -96,6 +95,11 @@ public class EditEvent extends javax.swing.JFrame {
             titleLabel.setFont(new Font("Times new Roman", 0, 34));
         }
         titleLabel.setText("Edit Event");
+
+        nameTextField.setDocument(new JTextFieldLimit(12));
+        startTextField.setDocument(new JTextFieldLimit(5));
+        endTextField.setDocument(new JTextFieldLimit(5));
+        descriptionTextArea.setDocument(new JTextFieldLimit(300));
 
         fillTextFields();
         setComboBox();
@@ -170,11 +174,11 @@ public class EditEvent extends javax.swing.JFrame {
         if(event.getStartDate()!=null)
             startTextField.setText(""+event.getStartDate());
         else
-            startTextField.setText("<Start>");
+            startTextField.setText("Start");
         if(event.getEndDate()!=null)
             endTextField.setText(""+event.getEndDate());  
         else
-            endTextField.setText("<End>");
+            endTextField.setText("End");
     }
     /**
      * Sets the comboBox.
@@ -183,7 +187,6 @@ public class EditEvent extends javax.swing.JFrame {
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
         String[] names = new String[fileIO.catSize()+1];
         int i = 0;
-        int catIndex = 0;
         Category c = new Category("Base");
         while(categoryIterator.hasNext()){
             c = categoryIterator.next();
@@ -191,7 +194,7 @@ public class EditEvent extends javax.swing.JFrame {
         }
         names[i] = "New Category";
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
-        selectedCategory = c;
+        selectedCategory = event.getCategory();
         jComboBox1.setSelectedItem(event.getCategory().getName());
     }
     
@@ -207,7 +210,7 @@ public class EditEvent extends javax.swing.JFrame {
         String endDate = endTextField.getText();
         Integer start, end;
         //Name and startDate are essential descriptors. The others are optional.
-        if(name.equals("<Name>") || startDate.equals("<Start>")){
+        if(name.equals("<Name>") || startDate.equals("Start")){
             JOptionPane.showMessageDialog(
                     null, "You must fill out the event name and start date!", 
                     "FATAL_ERROR", 
@@ -223,7 +226,13 @@ public class EditEvent extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+        if(name.length() <= 1){
+            JOptionPane.showMessageDialog(
+                        null, "Name must be at least 2 characters long!", 
+                        "FATAL_ERROR", 
+                        JOptionPane.ERROR_MESSAGE);
+                return false;
+        }
         event.setTitle(name);
         event.setStartDate(start);
         event.setCategory(selectedCategory);
@@ -231,24 +240,28 @@ public class EditEvent extends javax.swing.JFrame {
         if(!description.equals("<Des>")){
             event.setDescription(description);
         }
-        if(!endDate.equals("<End>")){
-            try{
-                end = Integer.parseInt(endDate);
-            }catch(NumberFormatException e){
-                JOptionPane.showMessageDialog(
-                    null, "The end date must be an integer!", 
-                    "FATAL_ERROR", 
-                    JOptionPane.ERROR_MESSAGE);
-                return false;
-            } 
-            //The end date can't happen before the starting date!
-            if(end >= start){
-                event.setEndDate(end);
+        if(!endDate.equals("End")){
+            if(endDate.equals("")){
+                event.setEndDate(null);
             }else{
-                JOptionPane.showMessageDialog(
-                    null, "The end date must be later than the start date!", 
-                    "JUST_TO_LET_YOU_KNOW", 
-                    JOptionPane.ERROR_MESSAGE);
+                try{
+                    end = Integer.parseInt(endDate);
+                }catch(NumberFormatException e){
+                    JOptionPane.showMessageDialog(
+                        null, "The end date must be an integer!", 
+                        "FATAL_ERROR", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return false;
+                } 
+                //The end date can't happen before the starting date!
+                if(end >= start){
+                    event.setEndDate(end);
+                }else{
+                    JOptionPane.showMessageDialog(
+                        null, "The end date must be later than the start date!", 
+                        "JUST_TO_LET_YOU_KNOW", 
+                        JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
         return true;

@@ -101,7 +101,7 @@ class Event{
          * 
          * @param endDate The end date to use.
          */
-	public void setEndDate(int endDate){
+	public void setEndDate(Integer endDate){
 		this.endDate = endDate;
 	}
         /**
