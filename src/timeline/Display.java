@@ -142,7 +142,10 @@ class Surface extends JPanel{
     }
     private void drawEvents(Integer start, Double slope, Integer h,
             Graphics2D g2d, Surface surface){
+        Integer height = surface.getHeight()/4;
+        Integer vertShift = height/events.size();
         for(Iterator<Event> it = events.iterator();it.hasNext();){
+            vertShift = vertShift-height/events.size();
             Event e = it.next();
             Integer eStart = e.getStartDate();
             Integer eEnd = e.getEndDate();
@@ -152,28 +155,30 @@ class Surface extends JPanel{
                 finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
                 g2d.drawLine(finish.intValue()+horizontalShift.intValue(),
                         h/2, finish.intValue()+horizontalShift.intValue(),
-                        h/2-h/8+h/32);
+                        h/2-h/8+h/32+vertShift);
                 g2d.drawLine(begin.intValue()+horizontalShift.intValue(),
-                        h/2-h/8+h/32, 
+                        h/2-h/8+h/32+vertShift, 
                         finish.intValue()+horizontalShift.intValue(),
-                        h/2-h/8+h/32);
+                        h/2-h/8+h/32+vertShift);
             }
             g2d.drawLine(begin.intValue()+horizontalShift.intValue(), h/2, 
-                    begin.intValue()+horizontalShift.intValue(), h/2-h/8);
+                    begin.intValue()+horizontalShift.intValue(), h/2-h/8+vertShift);
             JLabel label = new JLabel(e.getTitle());
-            descriptionLabel = new JLabel();
             if(e.getDescription()!=null){
+                descriptionLabel = new JLabel();
                 final String name = e.getDescription();
                //descriptionLabel.setVisible(false);
                 descriptionLabel.setLocation(begin.intValue()+horizontalShift.intValue(),
-                    h/2-h/8+30);
+                    h/2-h/8+30+vertShift);
                descriptionLabel.setSize(100,10);
                label.addMouseListener(new MouseListener()
                     {
                     public void mouseClicked(MouseEvent arg0) {
                     }
                     public void mouseEntered(MouseEvent arg0) {
+                        System.out.println("hello");
                         descriptionLabel.setText(name);
+                        descriptionLabel.setVisible(true);
                     }
                     public void mouseExited(MouseEvent arg0) {
                     }
@@ -186,7 +191,7 @@ class Surface extends JPanel{
                 
             }
             label.setLocation(begin.intValue()+horizontalShift.intValue(),
-                    h/2-h/8-10);
+                    h/2-h/8-10+vertShift);
             label.setSize(50,10);
             label.setForeground(e.getCategory().getColor());
             surface.add(label);
