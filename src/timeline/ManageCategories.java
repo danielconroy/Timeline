@@ -221,14 +221,21 @@ public class ManageCategories extends javax.swing.JFrame {
                }
 
            }else if(thisButton == createButton){
-               String name = nameTextField.getText();
+               String name = nameTextField.getText().trim();
+               if(name.length() <= 1){
+                    JOptionPane.showMessageDialog(
+                             null, "Name must be at least 2 characters long!", 
+                             "FATAL_ERROR", 
+                             JOptionPane.ERROR_MESSAGE);
+                    return;
+               }
+
                if(name.equals("<Name>")) return;
                Category cat = new Category(name);
                fileIO.addCategory(cat);
                setComboBox(); // Reset combo box to display the new timeline.
                jComboBox1.setSelectedItem(cat.getName());
                selectedCategory = cat;
-              
            }
         }
 

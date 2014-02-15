@@ -120,7 +120,6 @@ public class EditEvent extends javax.swing.JFrame {
         
         refreshButton.setIcon(icon);
 
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -204,10 +203,10 @@ public class EditEvent extends javax.swing.JFrame {
      * @return true if valid event, false if not.
      */
     public boolean submitTextFields(){
-        String name = nameTextField.getText();
+        String name = nameTextField.getText().trim();
         String description = descriptionTextArea.getText();
-        String startDate = startTextField.getText();
-        String endDate = endTextField.getText();
+        String startDate = startTextField.getText().trim();
+        String endDate = endTextField.getText().trim();
         Integer start, end;
         //Name and startDate are essential descriptors. The others are optional.
         if(name.equals("<Name>") || startDate.equals("Start")){
@@ -322,8 +321,8 @@ public class EditEvent extends javax.swing.JFrame {
                     timeline.addEvent(event);
                     superTimeline.setComboBox();   
                     superTimeline.setSelectedItem(event);
-                    fileIO.save();
                     superTimeline.removeEditEvent(thisEditEvent);
+                    fileIO.save();
                     setVisible(false);
                     dispose();
                 }

@@ -200,7 +200,15 @@ public class ManageTimelines extends javax.swing.JFrame {
                         deleteTimeline();
                }
            }else if(thisButton == createButton){
-               String name = nameTextField.getText();
+               String name = nameTextField.getText().trim();
+               if(name.length() < 1){
+                    JOptionPane.showMessageDialog(
+                             null, "Name must be at least 1 character long!", 
+                             "FATAL_ERROR", 
+                             JOptionPane.ERROR_MESSAGE);
+                    return;
+               }
+
                for(EditTimeline e : openEditTimelines)
                     if(e.getTimeline().getTitle().equals(name))
                         return;

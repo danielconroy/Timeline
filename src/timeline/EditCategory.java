@@ -186,14 +186,15 @@ public class EditCategory extends javax.swing.JFrame {
      * @return returns true of successful, else false.
      */
     public boolean submitTextFields(){
-        String name = nameTextField.getText();
-        if(name.equals("<Name>")){ 
+        String name = nameTextField.getText().trim();
+        if(name.equals("<Name>") || name.length() < 1){ 
             JOptionPane.showMessageDialog(
             null, "The category needs a name!", 
                 "FATAL_ERROR", 
                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        
         category.setName(name);        
         if(!makeColor()) return false;
         Color color = new Color(r, g, b);
@@ -294,7 +295,7 @@ public class EditCategory extends javax.swing.JFrame {
                         superManage.addEditCategory(thisEditCategory);
                         superManage.setComboBox();
                     }
-                    
+                    fileIO.save();
                     setVisible(false);
                     dispose();
                 }
