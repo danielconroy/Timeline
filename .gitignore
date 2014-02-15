@@ -9,3 +9,4 @@ TimeLineSave.txt
 *.jar
 *.war
 *.ear
+/dist/
