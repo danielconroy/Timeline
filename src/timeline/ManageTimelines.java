@@ -11,6 +11,7 @@ import javax.swing.*;
  * JFrame by which to manage timelines.
  * 
  * @author Daniel
+ * @author Kayley
  */
 public class ManageTimelines extends javax.swing.JFrame {
     private FileIO fileIO;

@@ -4,12 +4,20 @@ package timeline;
 import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
+
+/**
+ * JFrame to display at program opening.
+ * 
+ * @author Daniel
+ * @author Kayley
+ */
 public class OpenScreen extends JFrame {
-    /**
-     * Creates new form OpenScreen
-     */
     private final FileIO fileIO;
-    
+    /**
+     * Constructor
+     * 
+     * @param fileIO The fileIO used for saving.
+     */
     public OpenScreen(FileIO fileIO) {
         this.fileIO = fileIO;
         fileIO.addCategory(new Category("Default"));
@@ -22,6 +30,9 @@ public class OpenScreen extends JFrame {
     private JButton quitButton;
     private JLabel titleLabel;
     
+    /**
+     * Initializes the components.
+     */
     private void initComponents() {
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -77,45 +88,50 @@ public class OpenScreen extends JFrame {
                 
         pack();
     }
-    
-private class MenuListener implements ActionListener{
-    
-    public MenuListener(){
+    /**
+     * A listener to listen to a button selection.
+     */
+    private class MenuListener implements ActionListener{
+        /**
+         * Constructor
+         */
+        public MenuListener(){}
+        /**
+         * Implements the actionPerformed method to open child windows.
+         * 
+         * @param ae The ActionEvent.
+         */
+        public void actionPerformed(ActionEvent ae){
+            JButton thisButton = (JButton) ae.getSource();
+            if(thisButton == manageTButton){
+                        /* Create and display the form */
+                EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    ManageTimelines mt = new ManageTimelines(fileIO);
+                    mt.setVisible(true);
+                }
+                });
+            }else if(thisButton == displayButton){
+                         /* Create and display the form */
+                 EventQueue.invokeLater(new Runnable() {
+                 public void run() {
+                     DisplayTimelines dt = new DisplayTimelines(fileIO);
+                     dt.setVisible(true);
+                 }
+                });
+
+            }else if(thisButton == manageCButton){
+                 EventQueue.invokeLater(new Runnable() {
+                 public void run() {
+                     ManageCategories mc;
+                     mc = new ManageCategories(fileIO);
+                     mc.setVisible(true);
+                 }
+                });    
+            }else if(thisButton == quitButton){
+                fileIO.save();
+                System.exit(0);
+            }
+        }
     }
-    
-    public void actionPerformed(ActionEvent ae){
-        JButton thisButton = (JButton) ae.getSource();
-        if(thisButton == manageTButton){
-                    /* Create and display the form */
-            EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ManageTimelines mt = new ManageTimelines(fileIO);
-                mt.setVisible(true);
-            }
-           });
-       }else if(thisButton == displayButton){
-                    /* Create and display the form */
-            EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                DisplayTimelines dt = new DisplayTimelines(fileIO);
-                dt.setVisible(true);
-            }
-           });
-           
-       }else if(thisButton == manageCButton){
-            EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ManageCategories mc;
-                mc = new ManageCategories(fileIO);
-                mc.setVisible(true);
-            }
-           });    
-       }else if(thisButton == quitButton){
-           fileIO.save();
-           System.exit(0);
-       }
-       
-       }
-    }
-    
 }
