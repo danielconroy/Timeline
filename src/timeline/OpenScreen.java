@@ -24,6 +24,7 @@ public class OpenScreen extends JFrame {
     
     private void initComponents() {
         setResizable(false);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
         titleLabel = new JLabel();
         manageTButton = new JButton();
@@ -31,14 +32,11 @@ public class OpenScreen extends JFrame {
         manageCButton = new JButton();
         quitButton = new JButton();
         
-        
         manageTButton.addActionListener(new MenuListener());
         displayButton.addActionListener(new MenuListener());
         manageCButton.addActionListener(new MenuListener());
         quitButton.addActionListener(new MenuListener());
         
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         try{
             titleLabel.setFont(new Font("Vijaya", 0, 42));
         }catch(Exception e){
@@ -76,9 +74,7 @@ public class OpenScreen extends JFrame {
                 .addComponent(manageCButton)
                 .addComponent(quitButton))
         );
-        
-        //titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+                
         pack();
     }
     

@@ -193,10 +193,10 @@ public class ManageTimelines extends javax.swing.JFrame {
                         deleteTimeline();
                }
            }else if(thisButton == createButton){
-               for(EditTimeline e : openEditTimelines)
-                    if(e.getTimeline().getTitle().equals(selectedTimeline.getTitle()))
-                        return;
                String name = nameTextField.getText();
+               for(EditTimeline e : openEditTimelines)
+                    if(e.getTimeline().getTitle().equals(name))
+                        return;
                if(name.equals("<Name>")) return;
                if(fileIO.containsTimeline(name)) return;
                Timeline time = new Timeline(name);
