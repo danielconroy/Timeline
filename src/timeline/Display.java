@@ -9,12 +9,14 @@ import java.awt.Insets;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.GridLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.text.DecimalFormat;
+import javax.swing.JLabel;
 
 /**
  *
@@ -40,7 +42,7 @@ public class Display extends JFrame{
                 Timeline tl = new Timeline("test");
                 Category person = new Category("Person",Color.CYAN);
                 tl.addEvent(new Event("first",10,person));
-                tl.addEvent(new Event("second",25,person));
+                tl.addEvent(new Event("second",45,person));
                 Display display = new Display(tl);
                 display.setVisible(true);
             }
@@ -51,6 +53,7 @@ class Surface extends JPanel{
     private Double factor;
     private ArrayList<Event> events = new ArrayList<Event>();
     protected Surface(Timeline timeline){
+        setLayout(null);
         Iterator<Event> eventIterator = timeline.getEventIterator();
         while(eventIterator.hasNext())
             events.add(eventIterator.next());
@@ -62,7 +65,7 @@ class Surface extends JPanel{
     }
     private void doDrawing(Graphics g){
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setColor(Color.DARK_GRAY);
         Dimension size = getSize();
         Insets insets = getInsets();
         
@@ -104,9 +107,21 @@ class Surface extends JPanel{
         
         g2d.drawLine(0, h/2, w, h/2);
         Double increase = range.doubleValue()/10;
-        for(int i = 0; i<10; i++){
+        drawLines(start,increase,slope,h,g2d);
+        drawEvents(start,slope,h,g2d,this);
+    }
+    private Double convert(Double x, Double slope, Double start){
+        return slope*x-start*slope;
+    }
+    private void drawLines(Integer start, Double increase, Double slope,
+            Integer h, Graphics2D g2d){
+        for(int i = -20; i<20; i++){
             Double current = start.doubleValue();
-            current = current + increase*i;
+            Integer temp = current.intValue();
+            current = temp.doubleValue();
+            temp = increase.intValue();
+            Double increase2 = temp.doubleValue();
+            current = current + increase2*i;
             Double convert = convert(current,slope,start.doubleValue());
             int x = convert.intValue();
             Integer y = h/2+h/32;
@@ -114,6 +129,9 @@ class Surface extends JPanel{
             DecimalFormat df = new DecimalFormat("#.0");
             g2d.drawString(""+df.format(current), x, h/2);
         }
+    }
+    private void drawEvents(Integer start, Double slope, Integer h,
+            Graphics2D g2d, Surface surface){
         for(Iterator<Event> it = events.iterator();it.hasNext();){
             Event e = it.next();
             Integer eStart = e.getStartDate();
@@ -125,10 +143,10 @@ class Surface extends JPanel{
             else
                 finish = begin;
             g2d.drawLine(begin.intValue(), h/2, begin.intValue(), h/2-h/8);
-            g2d.drawString(e.getTitle(), begin.intValue(), h/2-h/8);
+            JLabel label = new JLabel(e.getTitle());
+            label.setLocation(begin.intValue(), h/2-h/8-10);
+            label.setSize(50,10);
+            surface.add(label);
         }
-    }
-    private Double convert(Double x, Double slope, Double start){
-        return slope*x-start*slope;
     }
 }
