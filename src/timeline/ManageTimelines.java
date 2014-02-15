@@ -7,16 +7,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.*;
 
+/**
+ * JFrame by which to manage timelines.
+ * 
+ * @author Daniel
+ */
 public class ManageTimelines extends javax.swing.JFrame {
-
-    /**
-     * Creates new form ManageTimelines
-     */
     private FileIO fileIO;
     private Timeline selectedTimeline = null;
     private static ArrayList<EditTimeline> openEditTimelines;
     private ManageTimelines thisManageTimelines;
     
+    /**
+     * Constructor
+     * 
+     * @param fileIO The FileIO by which to save.
+     */
     public ManageTimelines(FileIO fileIO) {
         openEditTimelines = new ArrayList<EditTimeline>();
         this.fileIO = fileIO;
@@ -118,12 +124,9 @@ public class ManageTimelines extends javax.swing.JFrame {
         pack();
         
     }
-
-    /*
-        Sets all the combo box options with all the timelines
-        available and known to the FileIO object.
-
-        */
+    /**
+     * Sets the combobox with timelines known to FileIO.
+     */
     private void setComboBox(){
         Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
         String[] names = new String[fileIO.timeSize()+1];
@@ -136,7 +139,9 @@ public class ManageTimelines extends javax.swing.JFrame {
         }
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
     }
-    
+    /**
+     * Deletes a timeline.
+     */
     private void deleteTimeline(){
         //Iterating over two ArrayLists.
         new Thread(new Runnable(){
@@ -159,20 +164,35 @@ public class ManageTimelines extends javax.swing.JFrame {
             fileIO.save();
         }}).start();
     }
-        
+    /**
+     * Adds an EditTimeline window to the children of this instance.
+     * 
+     * @param e The EditTimeline child to be added.
+     */
     public void addEditTimeline(EditTimeline e){
         openEditTimelines.add(e);
     }
-    
+    /**
+     * Removes an EditTimeline window from the children of this instance.
+     * 
+     * @param e The EditTimeline to be removed.
+     */
     public void removeEditTimeline(EditTimeline e){
         openEditTimelines.remove(e);
     }
-
+    /**
+     * A listener to edit a timeline.
+     */
     private class MTListener implements ActionListener{
-
-        public MTListener(){
-        }
-
+        /**
+         * Constructor
+         */
+        public MTListener(){}
+        /**
+         * Implements the actionPerformed metho to edit a specific timeline.
+         * 
+         * @param ae The actionEvent detected.
+         */
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == manageButton){
@@ -183,11 +203,10 @@ public class ManageTimelines extends javax.swing.JFrame {
                         return;
 
                 java.awt.EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    new EditTimeline(selectedTimeline, fileIO, thisManageTimelines).setVisible(true);
-                }
-            });
-
+                    public void run() {
+                        new EditTimeline(selectedTimeline, fileIO, thisManageTimelines).setVisible(true);
+                    }
+                });
            }else if(thisButton == deleteButton){
                if(selectedTimeline != null){
                     int result = JOptionPane.showConfirmDialog(
@@ -219,18 +238,22 @@ public class ManageTimelines extends javax.swing.JFrame {
             fileIO.save();
            }
         }
-    
     }
-
+    /**
+     * Listener for selections in the comboBox.
+     */
     private class ComboBoxListener implements ActionListener{
-
-        public ComboBoxListener(){
-
-        }
-
+        /**
+         * Constructor
+         */
+        public ComboBoxListener(){}
+        /**
+         * implements the actionPerformed method for selecting a timeline.
+         * 
+         * @param ae The actionEvent.
+         */
         public void actionPerformed(ActionEvent ae){
             JComboBox thisBox = (JComboBox) ae.getSource();
-
             Iterator<Timeline> timelineIterator =  fileIO.getTimelineIterator();
             Timeline t;
             while(timelineIterator.hasNext()){
@@ -238,13 +261,10 @@ public class ManageTimelines extends javax.swing.JFrame {
                 if(thisBox.getSelectedItem().equals(t.getTitle())){
                     selectedTimeline = t;
                     break;
-                }            
+                }      
             }
         }
-
     }
-
-
 }
 
     
