@@ -166,6 +166,7 @@ class Surface extends JPanel{
             label.setLocation(begin.intValue()+horizontalShift.intValue(),
                     h/2-h/8-10);
             label.setSize(50,10);
+            label.setForeground(e.getCategory().getColor());
             surface.add(label);
         }
     }
