@@ -240,17 +240,24 @@ public class EditTimeline extends javax.swing.JFrame {
                         }
                     }  
                    timeline.deleteEvent(selectedEvent);
+                   fileIO.save();
                    setComboBox();
                }
-               fileIO.save();
            }else if(thisButton == createButton){
-               String name = nameTextField.getText();
+               String name = nameTextField.getText().trim();
+               if(name.length() <= 1){
+                    JOptionPane.showMessageDialog(
+                             null, "Name must be at least 2 characters long!", 
+                             "FATAL_ERROR", 
+                             JOptionPane.ERROR_MESSAGE);
+                    return;
+               }
                 for(EditEvent e : openEditEvents)
                     if(e.getEvent().getTitle().equals(name))
                         return;
-                if(timeline.containsTitle(name)){
+                if(timeline.containsTitle(name))
                     return;
-                }
+                
                 java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     Event event = new Event(nameTextField.getText()); 
