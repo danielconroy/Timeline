@@ -43,8 +43,10 @@ public class Display extends JFrame{
             public void run() {
                 Timeline tl = new Timeline("test");
                 Category person = new Category("Person",Color.CYAN);
-                tl.addEvent(new Event("first",10,person));
-                tl.addEvent(new Event("second",45,person));
+                Event e1 = new Event("first",100,person);
+                e1.setEndDate(120);
+                tl.addEvent(e1);
+                tl.addEvent(new Event("second",200,person));
                 Display display = new Display(tl);
                 display.setVisible(true);
             }
@@ -54,8 +56,9 @@ public class Display extends JFrame{
 class Surface extends JPanel{
     private Double factor;
     private ArrayList<Event> events = new ArrayList<Event>();
-    private Integer horizontalShift = 0;
+    private Double horizontalShift = 0.0;
     private Double zoom = 1.0;
+    private Integer width;
     protected Surface(Timeline timeline){
         setLayout(null);
         Iterator<Event> eventIterator = timeline.getEventIterator();
@@ -72,6 +75,7 @@ class Surface extends JPanel{
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.DARK_GRAY);
         Dimension size = getSize();
+        width = size.width;
         Insets insets = getInsets();
         
         Integer start, end;
@@ -117,7 +121,7 @@ class Surface extends JPanel{
         addButtons(this,w,h);
     }
     private Double convert(Double x, Double slope, Double start){
-        return slope*x*zoom-start*slope+zoom;
+        return (slope*x-start*slope)*zoom;
     }
     private void drawLines(Integer start, Double increase, Double slope,
             Integer h, Graphics2D g2d){
@@ -131,9 +135,11 @@ class Surface extends JPanel{
             Double convert = convert(current,slope,start.doubleValue());
             int x = convert.intValue();
             Integer y = h/2+h/32;
-            g2d.drawLine(x+horizontalShift,y,x+horizontalShift,h/2);
+            g2d.drawLine(x+horizontalShift.intValue(),y,
+                    x+horizontalShift.intValue(),h/2);
             DecimalFormat df = new DecimalFormat("#.0");
-            g2d.drawString(""+df.format(current), x+horizontalShift, h/2);
+            g2d.drawString(""+df.format(current), x+horizontalShift.intValue()
+                    , h/2);
         }
     }
     private void drawEvents(Integer start, Double slope, Integer h,
@@ -144,14 +150,21 @@ class Surface extends JPanel{
             Integer eEnd = e.getEndDate();
             Double begin = convert(eStart.doubleValue(),slope,start.doubleValue());
             Double finish;
-            if(eEnd!=null)
+            if(eEnd!=null){
                 finish = convert(eEnd.doubleValue(),slope,start.doubleValue());
-            else
-                finish = begin;
-            g2d.drawLine(begin.intValue()+horizontalShift, h/2, 
-                    begin.intValue()+horizontalShift, h/2-h/8);
+                g2d.drawLine(finish.intValue()+horizontalShift.intValue(),
+                        h/2, finish.intValue()+horizontalShift.intValue(),
+                        h/2-h/8+h/32);
+                g2d.drawLine(begin.intValue()+horizontalShift.intValue(),
+                        h/2-h/8+h/32, 
+                        finish.intValue()+horizontalShift.intValue(),
+                        h/2-h/8+h/32);
+            }
+            g2d.drawLine(begin.intValue()+horizontalShift.intValue(), h/2, 
+                    begin.intValue()+horizontalShift.intValue(), h/2-h/8);
             JLabel label = new JLabel(e.getTitle());
-            label.setLocation(begin.intValue()+horizontalShift, h/2-h/8-10);
+            label.setLocation(begin.intValue()+horizontalShift.intValue(),
+                    h/2-h/8-10);
             label.setSize(50,10);
             surface.add(label);
         }
@@ -182,8 +195,8 @@ class Surface extends JPanel{
             public void actionPerformed(ActionEvent e){
                 new Thread(new Runnable(){
                     public void run(){
-                        surface.horizontalShift-=100;
-                        System.out.println(surface.horizontalShift);
+                        horizontalShift-=100;
+                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
@@ -193,8 +206,8 @@ class Surface extends JPanel{
             public void actionPerformed(ActionEvent e){
                 new Thread(new Runnable(){
                     public void run(){
-                        surface.horizontalShift+=100;
-                        System.out.println(surface.horizontalShift);
+                        horizontalShift+=100;
+                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
@@ -205,7 +218,10 @@ class Surface extends JPanel{
                 new Thread(new Runnable(){
                     public void run(){
                         zoom = zoom*2;
-                        System.out.println(surface.zoom);
+                        System.out.println("width "+width);
+                        //horizontalShift = horizontalShift + width/4;
+                        System.out.println(zoom);
+                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
@@ -216,7 +232,10 @@ class Surface extends JPanel{
                 new Thread(new Runnable(){
                     public void run(){
                         zoom = zoom/2;
-                        System.out.println(surface.zoom);
+                        System.out.println("width "+width);
+                       // horizontalShift = horizontalShift - width/4;
+                        System.out.println(zoom);
+                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
