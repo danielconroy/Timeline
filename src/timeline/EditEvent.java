@@ -8,6 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.*;
 
+/**
+ * This is a JFrame by which to edit events.
+ * 
+ * @author Daniel
+ * @author Kayley
+ */
 public class EditEvent extends javax.swing.JFrame {
 
     /**
@@ -18,8 +24,16 @@ public class EditEvent extends javax.swing.JFrame {
     private Timeline timeline;
     private EditTimeline superTimeline;
     private EditEvent thisEditEvent;
-    
-    public EditEvent(Event event, FileIO fileIO, Timeline timeline, EditTimeline superTimeline) {
+    /**
+     * Constructor
+     * 
+     * @param event The event to edit.
+     * @param fileIO The fileIO by which to save.
+     * @param timeline 
+     * @param superTimeline The timeline to which the event belongs.
+     */
+    public EditEvent(Event event, FileIO fileIO, Timeline timeline,
+            EditTimeline superTimeline) {
         this.event = event;
         this.fileIO = fileIO;
         this.timeline = timeline;
@@ -141,7 +155,9 @@ public class EditEvent extends javax.swing.JFrame {
 
         pack();
     }
-
+    /**
+     * Fills in the textFields.
+     */
     public void fillTextFields(){
         if(event.getTitle()!=null)
             nameTextField.setText(event.getTitle());
@@ -160,7 +176,9 @@ public class EditEvent extends javax.swing.JFrame {
         else
             endTextField.setText("<End>");
     }
-    
+    /**
+     * Sets the comboBox.
+     */
     public void setComboBox(){
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
         String[] names = new String[fileIO.catSize()+1];
@@ -177,7 +195,11 @@ public class EditEvent extends javax.swing.JFrame {
         jComboBox1.setSelectedItem(event.getCategory().getName());
     }
     
-    // Returns true if valid event, false if not.
+    /**
+     * Validates the entered event.
+     * 
+     * @return true if valid event, false if not.
+     */
     public boolean submitTextFields(){
         String name = nameTextField.getText();
         String description = descriptionTextArea.getText();
@@ -232,7 +254,7 @@ public class EditEvent extends javax.swing.JFrame {
         return true;
     }
     
-        /** 
+    /** 
      * Returns an ImageIcon, or null if the path was invalid. 
      * Code by http://docs.oracle.com/javase/tutorial/uiswing/components/icon.html.
      */
@@ -246,8 +268,9 @@ public class EditEvent extends javax.swing.JFrame {
             return null;
         }
     }
-
-    
+    /**
+     * Adds the window functionality.
+     */
     private void addWindowListener(){
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
         addWindowListener( new WindowAdapter()
@@ -258,16 +281,27 @@ public class EditEvent extends javax.swing.JFrame {
             }
         });
     }
-    
+    /**
+     * Returns the event being edited.
+     * 
+     * @return The event being edited.
+     */
     public Event getEvent(){
         return event;
     }
-
+    /**
+     * Listener to complete the editing process.
+     */
     private class EEListener implements ActionListener{
-    
-        public EEListener(){
-        }
-    
+        /**
+         * Constructor
+         */
+        public EEListener(){}
+        /**
+         * Implements the actionPerformed method to save and dispose.
+         * 
+         * @param ae The ActionEvent received.
+         */
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == finishedButton){
@@ -280,40 +314,43 @@ public class EditEvent extends javax.swing.JFrame {
                     setVisible(false);
                     dispose();
                 }
-
             }
         }
-    
     }
-    
+    /**
+     * The ComboBoxListener.
+     */
     private class ComboBoxListener implements ActionListener{
-    
-    public ComboBoxListener(){
-        
-    }
-    
-    public void actionPerformed(ActionEvent ae){
-        JComboBox thisBox = (JComboBox) ae.getSource();
-        
-        if(thisBox.getSelectedItem().equals("New Category")){
-              java.awt.EventQueue.invokeLater(new Runnable() {
-                   public void run() {
-                        new EditCategory(new Category("<New>"), fileIO, thisEditEvent).setVisible(true);
-                   }
-               });
-               return;
-        }
-        
-        Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
-        Category c;
-        while(categoryIterator.hasNext()){
-            c = categoryIterator.next();
-            if(thisBox.getSelectedItem().equals(c.getName())){
-                selectedCategory = c;
-                break;
-            }            
-        }
-    }
+        /**
+         * Constructor
+         */
+        public ComboBoxListener(){}
+        /**
+         * Implements the actionPerformed method to select the category.
+         * 
+         * @param ae The ActionEvent received.
+         */
+        public void actionPerformed(ActionEvent ae){
+            JComboBox thisBox = (JComboBox) ae.getSource();
 
+            if(thisBox.getSelectedItem().equals("New Category")){
+                  java.awt.EventQueue.invokeLater(new Runnable() {
+                       public void run() {
+                            new EditCategory(new Category("<New>"), fileIO, thisEditEvent).setVisible(true);
+                       }
+                   });
+                   return;
+            }
+
+            Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
+            Category c;
+            while(categoryIterator.hasNext()){
+                c = categoryIterator.next();
+                if(thisBox.getSelectedItem().equals(c.getName())){
+                    selectedCategory = c;
+                    break;
+                }            
+            }
+        }
     }
 }
