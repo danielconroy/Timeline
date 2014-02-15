@@ -9,16 +9,12 @@ import java.awt.Insets;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.event.*;
+import javax.swing.*;
 import javax.swing.SwingUtilities;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.text.DecimalFormat;
-import javax.swing.JLabel;
-import javax.swing.JButton;
 
 /**
  *
@@ -59,6 +55,8 @@ class Surface extends JPanel{
     private Double horizontalShift = 0.0;
     private Double zoom = 1.0;
     private Integer width;
+    private JLabel descriptionLabel;
+
     protected Surface(Timeline timeline){
         setLayout(null);
         Iterator<Event> eventIterator = timeline.getEventIterator();
@@ -163,6 +161,30 @@ class Surface extends JPanel{
             g2d.drawLine(begin.intValue()+horizontalShift.intValue(), h/2, 
                     begin.intValue()+horizontalShift.intValue(), h/2-h/8);
             JLabel label = new JLabel(e.getTitle());
+            descriptionLabel = new JLabel();
+            if(e.getDescription()!=null){
+                final String name = e.getDescription();
+               //descriptionLabel.setVisible(false);
+                descriptionLabel.setLocation(begin.intValue()+horizontalShift.intValue(),
+                    h/2-h/8+30);
+               descriptionLabel.setSize(100,10);
+               label.addMouseListener(new MouseListener()
+                    {
+                    public void mouseClicked(MouseEvent arg0) {
+                    }
+                    public void mouseEntered(MouseEvent arg0) {
+                        descriptionLabel.setText(name);
+                    }
+                    public void mouseExited(MouseEvent arg0) {
+                    }
+                    public void mousePressed(MouseEvent arg0) {
+                    }
+                    public void mouseReleased(MouseEvent arg0) {
+                    }
+                    });
+                surface.add(descriptionLabel);
+                
+            }
             label.setLocation(begin.intValue()+horizontalShift.intValue(),
                     h/2-h/8-10);
             label.setSize(50,10);
@@ -190,6 +212,7 @@ class Surface extends JPanel{
         
         addActionListeners(right,zIn,zOut,left,surface);
     }
+    
     private void addActionListeners(JButton right,JButton zIn,JButton zOut,
             JButton left, final Surface surface){
         right.addActionListener(new ActionListener(){

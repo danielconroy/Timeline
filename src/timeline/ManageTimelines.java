@@ -136,22 +136,26 @@ public class ManageTimelines extends javax.swing.JFrame {
     }
     
     private void deleteTimeline(){
-        for(EditTimeline et : openEditTimelines){
-                if(et.getTimeline().getTitle().equals(selectedTimeline.getTitle())){
-                    for(EditEvent ee : et.getEditEvents()){
-                        ee.dispose();
-                        ee.setVisible(false);
-                        }  
-                    et.dispose();
-                    et.setVisible(false);
-                    removeEditTimeline(et);
-                    break;
-                    }
-        }
+        //Iterating over two ArrayLists.
+        new Thread(new Runnable(){
+                public void run(){
+            for(EditTimeline et : openEditTimelines){
+                    if(et.getTimeline().getTitle().equals(selectedTimeline.getTitle())){
+                        for(EditEvent ee : et.getEditEvents()){
+                            ee.dispose();
+                            ee.setVisible(false);
+                            }  
+                        et.dispose();
+                        et.setVisible(false);
+                        removeEditTimeline(et);
+                        break;
+                        }
+            }
 
-        fileIO.deleteTimeline(selectedTimeline);
-        setComboBox();
-        fileIO.save();
+            fileIO.deleteTimeline(selectedTimeline);
+            setComboBox();
+            fileIO.save();
+        }}).start();
     }
         
     public void addEditTimeline(EditTimeline e){
