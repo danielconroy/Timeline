@@ -52,6 +52,8 @@ public class ManageTimelines extends javax.swing.JFrame {
         manageButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
         nameTextField = new javax.swing.JTextField();
+        nameTextField.setDocument(new JTextFieldLimit(12));
+
         deleteButton = new javax.swing.JButton();
         
         manageButton.addActionListener(new MTListener());
@@ -76,7 +78,7 @@ public class ManageTimelines extends javax.swing.JFrame {
         createButton.setText("Create Timeline");
         nameTextField.setText("<Name>");
         deleteButton.setText("Delete Timeline");
-
+        
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -175,6 +177,7 @@ public class ManageTimelines extends javax.swing.JFrame {
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == manageButton){
                 if(fileIO.timeSize()==0) return;
+                if(selectedTimeline == null) return;
                 for(EditTimeline e : openEditTimelines)
                     if(e.getTimeline().getTitle().equals(selectedTimeline.getTitle()))
                         return;

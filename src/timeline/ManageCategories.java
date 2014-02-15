@@ -50,6 +50,7 @@ public class ManageCategories extends javax.swing.JFrame {
         deleteButton = new JButton();
         createButton = new JButton();
         nameTextField = new JTextField();
+        nameTextField.setDocument(new JTextFieldLimit(20));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 

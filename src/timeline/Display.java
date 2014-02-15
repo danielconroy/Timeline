@@ -79,7 +79,8 @@ class Surface extends JPanel{
     private Double horizontalShift = 0.0;
     private Double zoom = 1.0;
     private Integer width;
-    private JLabel descriptionLabel;
+    private JTextArea descriptionTextArea;
+    private JScrollPane scroll;
     
     /**
      * Constructor
@@ -210,7 +211,7 @@ class Surface extends JPanel{
      * @param surface Parent Surface on which to paint.
      */
     private void drawEvents(Integer start, Double slope, Integer h,
-            Graphics2D g2d, Surface surface){
+        Graphics2D g2d, Surface surface){
         Integer height = surface.getHeight()/4;
         Integer vertShift = height/events.size();
         for(Iterator<Event> it = events.iterator();it.hasNext();){
@@ -233,21 +234,17 @@ class Surface extends JPanel{
             g2d.drawLine(begin.intValue()+horizontalShift.intValue(), h/2, 
                     begin.intValue()+horizontalShift.intValue(), h/2-h/8+vertShift);
             JLabel label = new JLabel(e.getTitle());
-            /*if(e.getDescription()!=null){
-                descriptionLabel = new JLabel();
-                final String name = e.getDescription();
-               //descriptionLabel.setVisible(false);
-                descriptionLabel.setLocation(begin.intValue()+horizontalShift.intValue(),
-                    h/2-h/8+30+vertShift);
-               descriptionLabel.setSize(100,10);
-               label.addMouseListener(new MouseListener()
+            final String name;
+            name = e.getDescription(); 
+            label.addMouseListener(new MouseListener()
                     {
                     public void mouseClicked(MouseEvent arg0) {
                     }
                     public void mouseEntered(MouseEvent arg0) {
-                        System.out.println("hello");
-                        descriptionLabel.setText(name);
-                        descriptionLabel.setVisible(true);
+                        if(name != null)
+                            descriptionTextArea.setText(name);
+                        else
+                            descriptionTextArea.setText("");
                     }
                     public void mouseExited(MouseEvent arg0) {
                     }
@@ -256,13 +253,10 @@ class Surface extends JPanel{
                     public void mouseReleased(MouseEvent arg0) {
                     }
                     });
-                surface.add(descriptionLabel);
-                
-            }
-            */
+
             label.setLocation(begin.intValue()+horizontalShift.intValue(),
                     h/2-h/8-10+vertShift);
-            label.setSize(50,10);
+            label.setSize(100,10);
             label.setForeground(e.getCategory().getColor());
             surface.add(label);
         }
@@ -291,7 +285,23 @@ class Surface extends JPanel{
         left.setLocation(w/2-200,h-20);
         left.setSize(100,20);
         surface.add(left);
-        
+        descriptionTextArea = new JTextArea();
+        scroll = new JScrollPane();
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setWrapStyleWord(true);
+        descriptionTextArea.setEditable(false);
+        descriptionTextArea.setOpaque(false);
+        descriptionTextArea.setBounds(10, 10, 200, 50);       
+        scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        descriptionTextArea.setVisible(true);
+        descriptionTextArea.setText("");
+        scroll.add(descriptionTextArea);
+        scroll.setVisible(true);
+        scroll.setViewportView(descriptionTextArea);
+        scroll.setLocation(w/2-100,h-75);
+        scroll.setSize(200,50);
+        surface.add(scroll);
         addActionListeners(right,zIn,zOut,left,surface);
     }
     /**

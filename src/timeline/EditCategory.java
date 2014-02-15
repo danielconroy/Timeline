@@ -99,7 +99,11 @@ public class EditCategory extends javax.swing.JFrame {
         }catch(Exception e){
             titleLabel.setFont(new Font("Times new Roman", 0, 16));
         }
-        
+        nameTextField.setDocument(new JTextFieldLimit(20));
+        redTextField.setDocument(new JTextFieldLimit(3));
+        greenTextField.setDocument(new JTextFieldLimit(3));
+        blueTextField.setDocument(new JTextFieldLimit(3));
+
         fillTextFields();
         makeColor();
         
