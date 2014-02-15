@@ -155,7 +155,7 @@ public class FileIO {
      * @param time The timeline for which to search.
      * @return True if found, False otherwise.
      */
-    public boolean containsTitle(Timeline time){
+    private boolean containsTitle(Timeline time){
         for(Timeline t : timelines){
             if(t.getTitle().equals(time.getTitle())) return true;
         }return false;
@@ -166,7 +166,7 @@ public class FileIO {
      * @param cat The category for which to search.
      * @return True if found, False otherwise.
      */
-    public boolean containsTitle(Category cat){
+    private boolean containsTitle(Category cat){
         for(Category c : categories){
             if(c.getName().equals(cat.getName())) return true;
         }return false;

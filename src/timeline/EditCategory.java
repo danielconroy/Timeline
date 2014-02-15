@@ -170,7 +170,7 @@ public class EditCategory extends javax.swing.JFrame {
      * Fills the text fields with either default values or, if
      * applicable, the category's saved values.
      */
-    public void fillTextFields(){
+    private void fillTextFields(){
         if(category.getName()!=null)
             nameTextField.setText(category.getName());
         else
@@ -184,7 +184,7 @@ public class EditCategory extends javax.swing.JFrame {
      * 
      * @return returns true if successful, else false.
      */
-    public boolean submitTextFields(){
+    private boolean submitTextFields(){
         String name = nameTextField.getText().trim();
         if(name.equals("<Name>") || name.length() < 1){ 
             JOptionPane.showMessageDialog(
@@ -216,7 +216,7 @@ public class EditCategory extends javax.swing.JFrame {
      * 
      * @return true if successful, else false.
      */
-    public boolean makeColor(){
+    private boolean makeColor(){
         String red = redTextField.getText();
         String green = greenTextField.getText();
         String blue = blueTextField.getText();

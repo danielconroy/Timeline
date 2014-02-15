@@ -161,7 +161,7 @@ public class EditEvent extends javax.swing.JFrame {
     /**
      * Fills in the textFields.
      */
-    public void fillTextFields(){
+    private void fillTextFields(){
         if(event.getTitle()!=null)
             nameTextField.setText(event.getTitle());
         else
@@ -180,7 +180,7 @@ public class EditEvent extends javax.swing.JFrame {
             endTextField.setText("End");
     }
     /**
-     * Sets the comboBox.
+     * Sets the comboBox with categories.
      */
     public void setComboBox(){
         Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
@@ -202,7 +202,7 @@ public class EditEvent extends javax.swing.JFrame {
      * 
      * @return true if valid event, false if not.
      */
-    public boolean submitTextFields(){
+    private boolean submitTextFields(){
         String name = nameTextField.getText().trim();
         String description = descriptionTextArea.getText();
         String startDate = startTextField.getText().trim();
@@ -353,7 +353,6 @@ public class EditEvent extends javax.swing.JFrame {
                    });
                    return;
             }
-
             Iterator<Category> categoryIterator =  fileIO.getCategoryIterator();
             Category c;
             while(categoryIterator.hasNext()){

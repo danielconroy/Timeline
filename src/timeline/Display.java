@@ -57,13 +57,11 @@ public class Display extends JFrame{
             public void run() {
                 Timeline tl = new Timeline("test");
                 Category person = new Category("Person",Color.CYAN);
-                Event e1 = new Event("first",100,person);
-                e1.setEndDate(120);
-                e1.setDescription("test description.");
+                Event e1 = new Event("first",4,person);
+                //e1.setEndDate(-2);
+                //e1.setDescription("test description.");
                 tl.addEvent(e1);
-                tl.addEvent(new Event("second",200,person));
-                tl.addEvent(e1);
-                tl.addEvent(new Event("second",7,person));
+                //tl.addEvent(new Event("second",5,person));
                 Display display = new Display(tl);
                 display.setVisible(true);
             }
@@ -155,8 +153,10 @@ class Surface extends JPanel{
         start = start-range/2;
         end = end+range/2;
         range = end - start;
+        if(range<10)
+            range = 10;
         
-        //to convert, y = (slope)x - start(slope)
+        //to convert, y = (slope)(x - start)
         Double slope = w.doubleValue()/range;
         
         g2d.drawLine(0, h/2, w, h/2);
@@ -323,7 +323,6 @@ class Surface extends JPanel{
                 new Thread(new Runnable(){
                     public void run(){
                         horizontalShift-=100;
-                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
@@ -334,7 +333,6 @@ class Surface extends JPanel{
                 new Thread(new Runnable(){
                     public void run(){
                         horizontalShift+=100;
-                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
@@ -345,10 +343,6 @@ class Surface extends JPanel{
                 new Thread(new Runnable(){
                     public void run(){
                         zoom = zoom*2;
-                        System.out.println("width "+width);
-                        //horizontalShift = horizontalShift + width/4;
-                        System.out.println(zoom);
-                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();
@@ -359,10 +353,6 @@ class Surface extends JPanel{
                 new Thread(new Runnable(){
                     public void run(){
                         zoom = zoom/2;
-                        System.out.println("width "+width);
-                       // horizontalShift = horizontalShift - width/4;
-                        System.out.println(zoom);
-                        System.out.println(horizontalShift);
                         surface.repaint();
                     }
                 }).start();

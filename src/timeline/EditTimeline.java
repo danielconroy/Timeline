@@ -130,7 +130,7 @@ public class EditTimeline extends javax.swing.JFrame {
         pack();
     }
     /**
-     * A method by which to add window functionality.
+     * Informs manageTimelines of the closing of this window.
      */
     private void addWindowListener(){
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
@@ -150,7 +150,7 @@ public class EditTimeline extends javax.swing.JFrame {
         jComboBox1.setSelectedItem(e.getTitle());
     }
     /**
-     * Sets the ComboBox.
+     * Sets the ComboBox with events.
      */
     public void setComboBox(){
        Iterator<Event> eventIterator = timeline.getEventIterator();
