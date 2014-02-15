@@ -8,11 +8,13 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+/**
+ * A JFrame by which to edit a timeline.
+ * 
+ * @author Daniel
+ * @author Kayley
+ */
 public class EditTimeline extends javax.swing.JFrame {
-
-    /**
-     * Creates new form EditTimeline
-     */
     private Timeline timeline;
     private FileIO fileIO;
     private Event selectedEvent;
@@ -26,7 +28,13 @@ public class EditTimeline extends javax.swing.JFrame {
     private EditTimeline thisEditTimeline;
     private static ArrayList<EditEvent> openEditEvents;
     private ManageTimelines superManage;
-    
+    /**
+     * Constructor
+     * 
+     * @param timeline The timeline to edit.
+     * @param fileIO The fileIO by which to save.
+     * @param superManage The parent window.
+     */
     public EditTimeline(Timeline timeline, FileIO fileIO, ManageTimelines superManage) {
         openEditEvents = new ArrayList<EditEvent>();
         this.timeline = timeline;
@@ -36,7 +44,9 @@ public class EditTimeline extends javax.swing.JFrame {
         superManage.addEditTimeline(thisEditTimeline);
         initComponents();
     }
-
+    /**
+     * The means by which the components are added.
+     */
     private void initComponents() {
         
         setResizable(false);
@@ -119,22 +129,29 @@ public class EditTimeline extends javax.swing.JFrame {
 
         pack();
     }
-
+    /**
+     * A method by which to add window functionality.
+     */
     private void addWindowListener(){
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);    
         addWindowListener( new WindowAdapter()
         {
-            public void windowClosing(WindowEvent e)
-            {
+            public void windowClosing(WindowEvent e){
                 superManage.removeEditTimeline(thisEditTimeline);
             }
         });
     }
-
+    /**
+     * Selects the event.
+     * 
+     * @param e The event selected.
+     */
     public void setSelectedItem(Event e){
         jComboBox1.setSelectedItem(e.getTitle());
     }
-    
+    /**
+     * Sets the ComboBox.
+     */
     public void setComboBox(){
        Iterator<Event> eventIterator = timeline.getEventIterator();
        String[] names = new String[timeline.eventSize()+1];
@@ -148,28 +165,51 @@ public class EditTimeline extends javax.swing.JFrame {
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(names));
         selectedEvent = null;
     }
-    
+    /**
+     * Adds an EditEvent window to the known children windows.
+     * 
+     * @param e The window to add.
+     */
     public void addEditEvent(EditEvent e){
         openEditEvents.add(e);
     }
-    
+    /**
+     * Removes an EditEvent window from the known children windows.
+     * 
+     * @param e The window to remove.
+     */
     public void removeEditEvent(EditEvent e){
         openEditEvents.remove(e);
     }
-    
+    /**
+     * Method to access the timeline being edited.
+     * 
+     * @return The timeline being edited.
+     */
     public Timeline getTimeline(){
         return timeline;
     }
-    
+    /**
+     * Method to access the children EditEvents windows.
+     * 
+     * @return An arraylist of EditEvent child windows.
+     */
     public ArrayList<EditEvent> getEditEvents(){
         return openEditEvents;
     }
-    
+    /**
+     * An ActionListener to edit an event.
+     */
     private class ETListener implements ActionListener{
-
-        public ETListener(){
-        }
-
+        /**
+         * Constructor
+         */
+        public ETListener(){}
+        /**
+         * Implements the actionPerformed method to edit an event.
+         * 
+         * @param ae The actionEvent received.
+         */
         public void actionPerformed(ActionEvent ae){
             JButton thisButton = (JButton) ae.getSource();
             if(thisButton == editButton){
@@ -220,15 +260,20 @@ public class EditTimeline extends javax.swing.JFrame {
                 });
            }
         }
-
-        }
-
+    }
+    /**
+     * A class to manage the ComboBox.
+     */
     private class ComboBoxListener implements ActionListener{
-
-        public ComboBoxListener(){
-
-        }
-
+        /**
+         * Constructor
+         */
+        public ComboBoxListener(){}
+        /**
+         * Implements the actionPerformed method to select an event.
+         * 
+         * @param ae The actionEvent received.
+         */
         public void actionPerformed(ActionEvent ae){
             JComboBox thisBox = (JComboBox) ae.getSource();
 
@@ -241,8 +286,6 @@ public class EditTimeline extends javax.swing.JFrame {
                 }
                 selectedEvent = null;
             }
-
         }
     }
-
 }
