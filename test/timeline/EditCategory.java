@@ -184,7 +184,7 @@ public class EditCategory extends javax.swing.JFrame {
      * 
      * @return returns true if successful, else false.
      */
-    private boolean submitTextFields(){
+    public boolean submitTextFields(){
         String name = nameTextField.getText().trim();
         if(name.equals("<Name>") || name.length() < 1){ 
             JOptionPane.showMessageDialog(
@@ -216,7 +216,7 @@ public class EditCategory extends javax.swing.JFrame {
      * 
      * @return true if successful, else false.
      */
-    private boolean makeColor(){
+    public boolean makeColor(){
         String red = redTextField.getText();
         String green = greenTextField.getText();
         String blue = blueTextField.getText();

@@ -31,6 +31,10 @@ public class ManageTimelines extends javax.swing.JFrame {
         initComponents();
     }
     
+    public void setSelectedTimeline(Timeline t){
+        selectedTimeline = t;
+    }
+    
     private javax.swing.JButton manageButton;
     private javax.swing.JButton createButton;
     private javax.swing.JButton deleteButton;
@@ -143,7 +147,7 @@ public class ManageTimelines extends javax.swing.JFrame {
     /**
      * Deletes a timeline.
      */
-    private void deleteTimeline(){
+    public void deleteTimeline(){
         //Iterating over two ArrayLists.
         new Thread(new Runnable(){
                 public void run(){

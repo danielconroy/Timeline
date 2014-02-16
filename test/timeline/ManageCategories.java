@@ -34,7 +34,7 @@ public class ManageCategories extends javax.swing.JFrame {
     private JComboBox jComboBox1;
     private JLabel titleLabel;
     private JTextField nameTextField;
-    private static ArrayList<EditCategory> openEditCategories;
+    public ArrayList<EditCategory> openEditCategories;
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -187,7 +187,7 @@ public class ManageCategories extends javax.swing.JFrame {
      * 
      * @param wasDeleted The category which was deleted.
      */
-    private void resetEventCategories(Category wasDeleted){
+    public void resetEventCategories(Category wasDeleted){
         Iterator<Timeline> timelineIterator = fileIO.getTimelineIterator();
         while(timelineIterator.hasNext()){
             Timeline t = timelineIterator.next();
