@@ -120,9 +120,10 @@ class Surface extends JPanel{
                     start = eDate;
                 if(eDate>end)
                     end = eDate;
-            }else{
-                end=start*2;
             }
+        }
+        if(end == start){
+            end = start*2;
         }
         
         Integer w = size.width - insets.left - insets.right;
