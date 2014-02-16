@@ -46,27 +46,7 @@ public class Display extends JFrame{
         add(new Surface(timeline));
         setLocationRelativeTo(null);
     }
-    /**
-     * Main Class for purposes of testing.
-     * 
-     * @param args 
-     */
-    public static void main(String[] args){
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                Timeline tl = new Timeline("test");
-                Category person = new Category("Person",Color.CYAN);
-                Event e1 = new Event("first",4,person);
-                //e1.setEndDate(-2);
-                //e1.setDescription("test description.");
-                tl.addEvent(e1);
-                //tl.addEvent(new Event("second",5,person));
-                Display display = new Display(tl);
-                display.setVisible(true);
-            }
-        });
-    }
+
 }
 /** The Surface Class extend JPanel to be the field of vision of the current
  * graphics.
