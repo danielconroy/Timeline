@@ -1,0 +1,46 @@
+This submission plays a very important role in the class as it is the only
+one that doesn't use JavaFX at all, and still producing a very nice-looking
+timeline. The File I/O also appeared to be all "hand made". It appeared
+a large amount of work went into the graphics fror displaying the timeline.
+
+One specific comment in the code: In Timeline.java, there is the method
+
+        public Iterator<Event> getEventIterator() {
+
+Why not name this method "iterator()" so that Timeline can be Iterable? 
+Moreover, why not simply return the iterator from the underlying 
+ArrayList?
+
+
+
+
+Data modeling and other architecture: The timeline and entry classes 
+were appropriately simple, with all aspects, including categories, 
+implemented, and nothing wierd. Its simplicity makes it a reasonable 
+basis for the next phases.
+
+JUnit tests: The tests were present, though I could not run them myself 
+because they were in a differnt folder that Eclipse didn't play nicely 
+with. Impression is that they were added at the end rather than 
+encorprorated throughout development.
+
+Write-up: The READ.me file seemed to serve the role of a write-up.
+Though it described the students' learning experiences, it did not summaried
+what they had learned about the project's problem, and it was useless for
+one exploring the code or using the program without context.
+
+GUI: As noted above, the GUI looks very good (expecially considering
+how tools like JavaFX weren't used).
+
+Features implemented: File I/O, atomic/duration, rendering, zooming and 
+scrolling, categories.
+
+Documentation and style: Effort was made to satisfy the formal 
+documenation requirements, but the documenation didn't show much 
+deliberation for helpfulness in guiding a reader through the code.
+
+Concurrency: Although some things were appropriately put on the EDT 
+using invokeLater, There seems to be a fair amount of confusion on how 
+to use concurrency correctly (very busy actionPeformed methods, for example).
+
+
